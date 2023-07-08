@@ -1,6 +1,8 @@
 package cz.lastaapps.languagetool.ui.theme.generated
 import androidx.compose.ui.graphics.Color
 
+object Tmp2
+
 val md_theme_light_primary = Color(0xFF0060A7)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFFD2E4FF)

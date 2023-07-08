@@ -16,6 +16,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import cz.lastaapps.languagetool.ui.theme.generated.DarkColors
 import cz.lastaapps.languagetool.ui.theme.generated.LightColors
 
+object Tmp
+
 @Composable
 fun AppTheme(
     isDarkMode: Boolean = isSystemInDarkTheme(),

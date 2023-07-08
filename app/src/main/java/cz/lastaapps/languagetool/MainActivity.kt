@@ -8,9 +8,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import cz.lastaapps.languagetool.ui.home.HomeScreen
 import cz.lastaapps.languagetool.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,30 +29,21 @@ class MainActivity : ComponentActivity() {
             AppTheme(
                 colorSystemBars = true,
             ) {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
+                var text by remember {
+                    mutableStateOf(TextFieldValue(""))
                 }
+
+                HomeScreen(
+                    text = text,
+                    onText = {text = it},
+                    onCheck = {},
+                    onLogin = {},
+                    onAbout = {},
+                    onSettings = {},
+                    onChooseLanguage = {},
+                    onSystemSpellCheck = {},
+                )
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppTheme {
-        Greeting("Android")
     }
 }
