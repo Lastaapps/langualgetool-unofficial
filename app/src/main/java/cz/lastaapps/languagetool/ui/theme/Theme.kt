@@ -1,70 +1,101 @@
 package cz.lastaapps.languagetool.ui.theme
 
-import android.app.Activity
-import android.os.Build
+import android.annotation.SuppressLint
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import cz.lastaapps.languagetool.ui.theme.generated.DarkColors
+import cz.lastaapps.languagetool.ui.theme.generated.LightColors
 
 @Composable
-fun LanguageToolUnofficialTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+fun AppTheme(
+    isDarkMode: Boolean = isSystemInDarkTheme(),
+    useDynamic: Boolean = false,
+    colorSystemBars: Boolean = false,
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val isLightMode = !isDarkMode
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
+    val colorScheme = if (useDynamic) {
+        @SuppressLint("NewApi")
+        if (isLightMode) {
+            dynamicLightColorScheme(LocalContext.current)
+        } else {
+            dynamicDarkColorScheme(LocalContext.current)
+        }
+    } else {
+        if (isLightMode) {
+            LightColors
+        } else {
+            DarkColors
+        }
+    }.animated()
+
+    if (colorSystemBars) {
+        val systemUiController = rememberSystemUiController()
+
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            systemUiController.setStatusBarColor(
+                color = colorScheme.background,
+                darkIcons = isLightMode,
+            )
+            systemUiController.setNavigationBarColor(
+                color = colorScheme.surfaceVariant,
+                darkIcons = isLightMode,
+            )
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+    ) {
+        CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodyMedium) {
+            content()
+        }
+    }
+}
+
+@Suppress("AnimateAsStateLabel")
+@Composable
+private fun ColorScheme.animated(): ColorScheme {
+    return ColorScheme(
+        background = animateColorAsState(background).value,
+        error = animateColorAsState(error).value,
+        errorContainer = animateColorAsState(errorContainer).value,
+        inverseOnSurface = animateColorAsState(inverseOnSurface).value,
+        inversePrimary = animateColorAsState(inversePrimary).value,
+        inverseSurface = animateColorAsState(inverseSurface).value,
+        onBackground = animateColorAsState(onBackground).value,
+        onError = animateColorAsState(onError).value,
+        onErrorContainer = animateColorAsState(onErrorContainer).value,
+        onPrimary = animateColorAsState(onPrimary).value,
+        onPrimaryContainer = animateColorAsState(onPrimaryContainer).value,
+        onSecondary = animateColorAsState(onSecondary).value,
+        onSecondaryContainer = animateColorAsState(onSecondaryContainer).value,
+        onSurface = animateColorAsState(onSurface).value,
+        onSurfaceVariant = animateColorAsState(onSurfaceVariant).value,
+        onTertiary = animateColorAsState(onTertiary).value,
+        onTertiaryContainer = animateColorAsState(onTertiaryContainer).value,
+        outline = animateColorAsState(outline).value,
+        primary = animateColorAsState(primary).value,
+        primaryContainer = animateColorAsState(primaryContainer).value,
+        secondary = animateColorAsState(secondary).value,
+        secondaryContainer = animateColorAsState(secondaryContainer).value,
+        surface = animateColorAsState(surface).value,
+        surfaceVariant = animateColorAsState(surfaceVariant).value,
+        surfaceTint = animateColorAsState(surfaceTint).value,
+        tertiary = animateColorAsState(tertiary).value,
+        tertiaryContainer = animateColorAsState(tertiaryContainer).value,
+        outlineVariant = animateColorAsState(outlineVariant).value,
+        scrim = animateColorAsState(scrim).value,
     )
 }

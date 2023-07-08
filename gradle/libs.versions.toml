@@ -58,6 +58,7 @@ arrowkt-core = { module = "io.arrow-kt:arrow-core" }
 arrowkt-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines" }
 arrowkt-fx-stm = { module = "io.arrow-kt:arrow-fx-stm" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+google-material = "com.google.android.material:material:1.9.0"
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 koin-android-compose = "io.insert-koin:koin-androidx-compose:3.4.3"
 koin-android-core = { module = "io.insert-koin:koin-android", version.ref = "koin" }

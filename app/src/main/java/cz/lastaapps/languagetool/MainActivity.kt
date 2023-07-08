@@ -10,13 +10,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import cz.lastaapps.languagetool.ui.theme.LanguageToolUnofficialTheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import cz.lastaapps.languagetool.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
         setContent {
-            LanguageToolUnofficialTheme {
+            AppTheme(
+                colorSystemBars = true,
+            ) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -40,7 +46,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    LanguageToolUnofficialTheme {
+    AppTheme {
         Greeting("Android")
     }
 }

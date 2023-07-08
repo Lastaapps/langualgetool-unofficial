@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.emoji2.core)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.ui)
+    implementation(libs.google.material)
 
 
     testImplementation(libs.junit)
