@@ -2,13 +2,14 @@ package cz.lastaapps.languagetool.ui.home.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Keyboard
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,13 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cz.lastaapps.languagetool.ui.components.IconButtonTooltip
 import cz.lastaapps.languagetool.ui.home.model.CheckProgress
+import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
 @Composable
 fun HomeBottomAppBar(
     progress: CheckProgress,
     onCheck: () -> Unit,
     onSystemSpellCheck: () -> Unit,
-    onLogin: () -> Unit,
+    onHelpClick: () -> Unit,
     onSettings: () -> Unit,
     onAbout: () -> Unit,
     modifier: Modifier = Modifier,
@@ -46,9 +48,9 @@ fun HomeBottomAppBar(
                 contentDescription = "Spell Check",
             )
             IconButtonTooltip(
-                onClick = onLogin,
-                icon = Icons.Outlined.Person,
-                contentDescription = "Login",
+                onClick = onHelpClick,
+                icon = Icons.Default.HelpOutline,
+                contentDescription = "Help",
             )
             IconButtonTooltip(
                 onClick = onSettings,
@@ -91,6 +93,7 @@ fun HomeBottomAppBar(
                 }
             },
             onClick = onCheck,
+            modifier = Modifier.padding(end = PaddingTokens.Small),
         )
     }
 }

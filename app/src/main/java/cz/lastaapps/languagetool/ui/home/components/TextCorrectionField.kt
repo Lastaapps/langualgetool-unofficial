@@ -1,8 +1,14 @@
 package cz.lastaapps.languagetool.ui.home.components
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -13,25 +19,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import cz.lastaapps.languagetool.data.model.MatchedText
 import cz.lastaapps.languagetool.ui.home.logic.toAnnotatedString
+import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun TextCorrectionField(
     matched: MatchedText,
     onText: (String) -> Unit,
     onCursor: (Int) -> Unit,
-    onCheckRequest: () -> Boolean,
     charLimit: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -72,25 +75,21 @@ internal fun TextCorrectionField(
             }
             onCursor(newTextFieldValueState.selection.start)
         },
-        onCheckRequest = onCheckRequest,
         charLimit = charLimit,
         errors = matched.errors.size,
-        isClear = !matched.isTouched,
+        isClean = !matched.isTouched,
         modifier = modifier,
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun TextCorrectionField(
     text: TextFieldValue,
     onText: (TextFieldValue) -> Unit,
-    onCheckRequest: () -> Boolean,
     charLimit: Int,
     errors: Int,
-    isClear: Boolean,
+    isClean: Boolean,
     modifier: Modifier = Modifier,
-    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
 ) {
     val chars = text.text.length
 
@@ -103,19 +102,39 @@ internal fun TextCorrectionField(
             Text(text = "Enter the text to spell-check...")
         },
         supportingText = {
-            Row {
-                Text(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(PaddingTokens.Small),
                     modifier = Modifier.weight(1f),
-                    text = buildString {
+                ) {
+                    when {
+                        errors > 0 -> Icons.Default.Error to MaterialTheme.colorScheme.error
+                        !isClean -> Icons.Default.Warning to MaterialTheme.colorScheme.primary
+                        // else -> Icons.Default.Check to LocalContentColor.current
+                        else -> Icons.Default.Check to MaterialTheme.colorScheme.secondary
+                    }.let {
+                        Crossfade(targetState = it, label = "validity_icon") { (icon, tint) ->
+                            Icon(icon, null, tint = tint)
+                        }
+                    }
+                    buildString {
                         append(errors)
                         append(" errors, ")
-                        if (isClear) {
+                        if (isClean) {
                             append("Validated")
                         } else {
                             append("Dirty")
                         }
-                    },
-                )
+                    }.let {
+                        Crossfade(targetState = it, label = "validity_text") { text ->
+                            Text(text = text)
+                        }
+                    }
+                }
+
                 Text(
                     "$chars/$charLimit",
                 )
@@ -129,11 +148,6 @@ internal fun TextCorrectionField(
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
         ),
-        keyboardActions = KeyboardActions {
-            if (onCheckRequest()) {
-                keyboardController?.hide()
-            }
-        },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Sentences,
             autoCorrect = false,

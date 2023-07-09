@@ -1,7 +1,6 @@
 package cz.lastaapps.languagetool.ui.home
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.currentComposer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
@@ -13,6 +12,7 @@ import cz.lastaapps.languagetool.data.model.MatchedText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 internal class HomeViewModel(
@@ -36,7 +36,7 @@ internal class HomeViewModel(
                 // TODO("Report error $res")
             }
         }
-    }.let { true }
+    }.let { }
 
     fun onTextChanged(newText: String) {
         state.update {
@@ -53,11 +53,13 @@ internal class HomeViewModel(
     }
 
     fun applySuggestion(error: MatchedError, suggestion: String) {
-        state.update {
+        state.updateAndGet {
             val currentMatched = it.matched
             it.copy(
                 matched = currentMatched.replace(error.range, suggestion),
             )
+        }.matched.errors.takeIf { it.isEmpty() }?.let {
+            onCheckRequest()
         }
     }
 

@@ -10,10 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cz.lastaapps.languagetool.ui.home.components.ActionChips
+import cz.lastaapps.languagetool.ui.home.components.ErrorSuggestionRow
 import cz.lastaapps.languagetool.ui.home.components.HomeBottomAppBar
 import cz.lastaapps.languagetool.ui.home.components.TextCorrectionField
 import cz.lastaapps.languagetool.ui.home.model.CheckProgress
-import cz.lastaapps.languagetool.ui.home.components.ErrorSuggestionRow
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -38,8 +38,7 @@ internal fun HomeDest(
             matched = state.matched,
             onText = viewModel::onTextChanged,
             onCursor = { cursorPosition = it },
-            onCheckRequest = viewModel::onCheckRequest,
-            charLimit = 20_000,
+            charLimit = 20_000, // TODO
             modifier = localModifier,
         )
     }
@@ -53,7 +52,10 @@ internal fun HomeDest(
     val chipsBlock: @Composable () -> Unit = {
         ActionChips(
             matched = state.matched,
-            onText = viewModel::onTextChanged,
+            onPasteText = {
+                viewModel.onTextChanged(it)
+                viewModel.onCheckRequest()
+            },
             onError = { /*TODO*/ },
             isPicky = false,
             onPickyClick = { /*TODO*/ },
@@ -69,7 +71,7 @@ internal fun HomeDest(
             progress = CheckProgress.Ready,
             onCheck = { viewModel.onCheckRequest() },
             onSystemSpellCheck = { /*TODO*/ },
-            onLogin = { /*TODO*/ },
+            onHelpClick = { /*TODO*/ },
             onSettings = { /*TODO*/ },
             onAbout = { /*TODO*/ },
         )

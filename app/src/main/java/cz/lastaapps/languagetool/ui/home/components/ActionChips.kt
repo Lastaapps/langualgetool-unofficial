@@ -1,21 +1,17 @@
 package cz.lastaapps.languagetool.ui.home.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentPaste
-import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +28,7 @@ import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 @Composable
 internal fun ActionChips(
     matched: MatchedText,
-    onText: (String) -> Unit,
+    onPasteText: (String) -> Unit,
     onError: (DomainError) -> Unit,
     isPicky: Boolean,
     onPickyClick: () -> Unit,
@@ -75,19 +71,13 @@ internal fun ActionChips(
             IconButtonTooltip(
                 onClick = {
                     clipboard.getText()?.let {
-                        onText(it.text)
+                        onPasteText(it.text)
                     } ?: onError(CommonErrors.ClipboardEmpty)
                 },
                 icon = Icons.Default.ContentPaste,
                 contentDescription = "Paste",
             )
         }
-
-        IconButtonTooltip(
-            onClick = onHelpClick,
-            icon = Icons.Default.HelpOutline,
-            contentDescription = "Help",
-        )
 
         FilterChip(
             selected = isPicky,
