@@ -11,9 +11,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
-import io.ktor.client.request.setBody
 import io.ktor.http.HttpMethod
-import io.ktor.http.path
 import io.ktor.util.AttributeKey
 
 internal interface LanguageToolApi {
@@ -22,7 +20,7 @@ internal interface LanguageToolApi {
         config: CorrectionConfig,
     ): Outcome<CorrectionDto>
 
-    suspend fun getLanguages(): Outcome<SupportedLanguageDto>
+    suspend fun getLanguages(): Outcome<List<SupportedLanguageDto>>
 }
 
 internal class LanguageToolApiImpl(
@@ -65,7 +63,7 @@ internal class LanguageToolApiImpl(
         }.body()
     }
 
-    override suspend fun getLanguages(): Outcome<SupportedLanguageDto> = catchingNetwork {
+    override suspend fun getLanguages(): Outcome<List<SupportedLanguageDto>> = catchingNetwork {
         client.get(urlProvider.provideUrl() + "/languages").body()
     }
 }

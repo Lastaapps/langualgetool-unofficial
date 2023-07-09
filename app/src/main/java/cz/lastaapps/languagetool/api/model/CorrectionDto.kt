@@ -1,5 +1,8 @@
 package cz.lastaapps.languagetool.api.model
 
+import arrow.core.some
+import cz.lastaapps.languagetool.data.model.MatchedText
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -36,4 +39,12 @@ internal data class LanguageDto(
 internal data class DetectedLanguageDto(
     val name: String,
     val code: String,
+)
+
+internal fun CorrectionDto.toDomain(
+    text: String,
+) = MatchedText(
+    text = text,
+    errors = matches.map { it.toDomain() }.toImmutableList(),
+    isComplete = (this.warnings?.incompleteResults ?: true).some(),
 )

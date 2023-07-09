@@ -32,7 +32,9 @@ fun TextCorrectionField(
 
     TextField(
         value = text,
-        onValueChange = onText,
+        onValueChange = {
+
+        },
         placeholder = {
             Text(text = "Enter the text to spell-check...")
         },

@@ -15,6 +15,7 @@ compose-compiler = "1.4.8"
 espresso-core = "3.5.1"
 junit = "4.13.2"
 koin = "3.4.0"
+kotest = "5.6.0"
 kotlin = "1.8.22"
 kotlin-coroutines = "1.7.1"
 ktor = "2.3.2"
@@ -64,6 +65,8 @@ koin-android-compose = "io.insert-koin:koin-androidx-compose:3.4.3"
 koin-android-core = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-android-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-runner = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlinx-coroutines-common = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
