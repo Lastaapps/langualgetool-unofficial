@@ -54,15 +54,22 @@ internal data class CategoryDto(
     val name: String,
 )
 
-internal fun MatchDto.toDomain() = MatchedError(
-    message = this.message,
-    shortMessage = this.shortMessage?.takeIf { it.isNotEmpty() },
-    range = offset withLength length,
-    replacements = this.replacements.map { it.value }.toImmutableList(),
-    ruleDescription = this.rule.description,
-    errorType = this.rule.toErrorType(),
-    explanationUrl = this.rule.urls?.firstOrNull()?.value,
-)
+internal fun MatchDto.toDomain(
+    index: Int,
+    text: String,
+) = (offset withLength length).let { range ->
+    MatchedError(
+        index = index,
+        message = this.message,
+        shortMessage = this.shortMessage?.takeIf { it.isNotEmpty() },
+        range = range,
+        original = text.substring(range),
+        replacements = this.replacements.map { it.value }.toImmutableList(),
+        ruleDescription = this.rule.description,
+        errorType = this.rule.toErrorType(),
+        explanationUrl = this.rule.urls?.firstOrNull()?.value,
+    )
+}
 
 internal fun RuleDto.toErrorType() =
     when (this.issueType) {

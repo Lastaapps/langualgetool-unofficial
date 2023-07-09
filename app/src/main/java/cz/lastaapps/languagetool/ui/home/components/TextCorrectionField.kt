@@ -28,14 +28,14 @@ import cz.lastaapps.languagetool.ui.home.logic.toAnnotatedString
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun TextCorrectionField(
-    text: MatchedText,
+    matched: MatchedText,
     onText: (String) -> Unit,
     onCursor: (Int) -> Unit,
     onCheckRequest: () -> Boolean,
     charLimit: Int,
     modifier: Modifier = Modifier,
 ) {
-    val value = text.toAnnotatedString()
+    val value = matched.toAnnotatedString()
 
     // Stolen from the BasicTextField
     // Holds the latest internal TextFieldValue state. We need to keep it to have the correct value
@@ -74,6 +74,8 @@ internal fun TextCorrectionField(
         },
         onCheckRequest = onCheckRequest,
         charLimit = charLimit,
+        errors = matched.errors.size,
+        isClear = !matched.isTouched,
         modifier = modifier,
     )
 }
@@ -85,6 +87,8 @@ internal fun TextCorrectionField(
     onText: (TextFieldValue) -> Unit,
     onCheckRequest: () -> Boolean,
     charLimit: Int,
+    errors: Int,
+    isClear: Boolean,
     modifier: Modifier = Modifier,
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current,
 ) {
@@ -102,7 +106,15 @@ internal fun TextCorrectionField(
             Row {
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = "20 errors\nResults incomplete!",
+                    text = buildString {
+                        append(errors)
+                        append(" errors, ")
+                        if (isClear) {
+                            append("Validated")
+                        } else {
+                            append("Dirty")
+                        }
+                    },
                 )
                 Text(
                     "$chars/$charLimit",

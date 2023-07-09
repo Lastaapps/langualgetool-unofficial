@@ -1,12 +1,14 @@
 package cz.lastaapps.languagetool.ui.home
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.currentComposer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import cz.lastaapps.languagetool.data.LangToolRepository
 import cz.lastaapps.languagetool.data.logic.replace
 import cz.lastaapps.languagetool.data.logic.textDiff
+import cz.lastaapps.languagetool.data.model.MatchedError
 import cz.lastaapps.languagetool.data.model.MatchedText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,6 +48,15 @@ internal class HomeViewModel(
 
             it.copy(
                 matched = currentMatched.replace(diff.first, diff.second),
+            )
+        }
+    }
+
+    fun applySuggestion(error: MatchedError, suggestion: String) {
+        state.update {
+            val currentMatched = it.matched
+            it.copy(
+                matched = currentMatched.replace(error.range, suggestion),
             )
         }
     }

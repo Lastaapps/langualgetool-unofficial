@@ -2,8 +2,13 @@ package cz.lastaapps.languagetool.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,13 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreenScaffold(
     snackbarHostState: SnackbarHostState,
     text: @Composable (Modifier) -> Unit,
+    errorSuggestions: @Composable () -> Unit,
     actionChips: @Composable () -> Unit,
     appBar: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    keyboardOpen: Boolean = WindowInsets.isImeVisible,
 ) {
     Scaffold(
         modifier = modifier,
@@ -39,7 +47,10 @@ fun HomeScreenScaffold(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(PaddingTokens.Medium),
         ) {
-            Title(modifier = Modifier.align(Alignment.CenterHorizontally))
+            Title(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                isSmall = keyboardOpen,
+            )
 
             text(
                 Modifier
@@ -47,7 +58,11 @@ fun HomeScreenScaffold(
                     .fillMaxWidth(),
             )
 
-            actionChips()
+            errorSuggestions()
+
+            if (!keyboardOpen) {
+                actionChips()
+            }
         }
     }
 }
@@ -55,22 +70,53 @@ fun HomeScreenScaffold(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Title(
+    isSmall: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.End,
-    ) {
-        Text(
-            text = "LanguageTool",
-            style = MaterialTheme.typography.displaySmall,
-        )
-
-        Badge {
+    if (!isSmall) {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.End,
+        ) {
             Text(
-                text = "Unofficial",
-                style = MaterialTheme.typography.bodySmall,
+                text = "LanguageTool",
+                style = MaterialTheme.typography.displaySmall,
             )
+
+            Badge {
+                Text(
+                    text = "Unofficial",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(
+                        vertical = PaddingTokens.Tiny,
+                        horizontal = PaddingTokens.Small,
+                    )
+                )
+            }
+
+        }
+    } else {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(PaddingTokens.MidSmall),
+        ) {
+            Text(
+                text = "LanguageTool",
+                style = MaterialTheme.typography.titleLarge,
+            )
+
+            Badge {
+                Text(
+                    text = "Unofficial",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(
+                        vertical = PaddingTokens.Tiny,
+                        horizontal = PaddingTokens.Small,
+                    )
+                )
+            }
+
         }
     }
 }

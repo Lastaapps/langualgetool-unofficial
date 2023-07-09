@@ -1,0 +1,184 @@
+package cz.lastaapps.languagetool.ui.home.components
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import arrow.fx.stm.internal.index
+import cz.lastaapps.languagetool.data.model.ErrorType
+import cz.lastaapps.languagetool.data.model.MatchedError
+import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.data.logic.*
+import cz.lastaapps.languagetool.ui.theme.PaddingTokens
+import cz.lastaapps.languagetool.ui.util.PreviewWrapper
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+internal fun ErrorSuggestionRow(
+    cursorPosition: Int,
+    matched: MatchedText,
+    onApplySuggestion: (MatchedError, String) -> Unit,
+    errorSuggestionsRowState: LazyListState = rememberLazyListState(),
+) {
+    val errorIndex = remember(matched, cursorPosition) {
+        matched.getErrorIndexForCursor(cursorPosition)
+            .coerceAtLeast(0)
+    }
+    LaunchedEffect(errorIndex) {
+        errorSuggestionsRowState.animateScrollToItem(errorIndex, 0)
+    }
+
+    LazyRow(
+        state = errorSuggestionsRowState,
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxWidth()
+            .animateContentSize(),
+        horizontalArrangement = Arrangement.spacedBy(PaddingTokens.MidSmall),
+    ) {
+        items(matched.errors, key = { it.index }) { error ->
+            ErrorSuggestionRowItem(
+                onDetail = { /* TODO */ },
+                onSuggestion = { onApplySuggestion(error, it) },
+                error = error,
+                modifier = Modifier.animateItemPlacement(),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+internal fun ErrorSuggestionRowItem(
+    onDetail: () -> Unit,
+    onSuggestion: (String) -> Unit,
+    error: MatchedError,
+    modifier: Modifier = Modifier,
+) {
+    ElevatedCard(
+        onClick = onDetail,
+        modifier = modifier
+            .sizeIn(
+                minWidth = ErrorSuggestionTokens.minWidth,
+                maxWidth = ErrorSuggestionTokens.maxWidth - 40.dp,
+            )
+            .height(ErrorSuggestionTokens.height)
+            .padding(bottom = PaddingTokens.Small),
+    ) {
+        Column(
+            modifier = modifier
+                .padding(PaddingTokens.Small)
+                .clip(MaterialTheme.shapes.medium)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(PaddingTokens.Small),
+        ) {
+            Text(
+                text = error.shortMessage ?: error.message,
+                softWrap = false,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+
+            Text(
+                text = error.original,
+                softWrap = false,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textDecoration = TextDecoration.LineThrough,
+                style = MaterialTheme.typography.labelSmall,
+            )
+
+            FlowRow(
+                // horizontalArrangement = Arrangement.spacedBy(PaddingTokens.Small),
+                // verticalAlignment = Alignment.Top,
+            ) {
+                error.replacements.forEach { suggestion ->
+                    SuggestionItem(
+                        onClick = { onSuggestion(suggestion) },
+                        suggestion = suggestion,
+                        type = error.errorType,
+                        modifier = Modifier.padding(PaddingTokens.Small / 2)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SuggestionItem(
+    onClick: () -> Unit,
+    suggestion: String,
+    type: ErrorType,
+    modifier: Modifier = Modifier,
+) {
+    // val color = type.toColor()
+    val color = MaterialTheme.colorScheme.error
+    Surface(
+        color = color,
+        modifier = modifier.clickable { onClick() },
+        shape = MaterialTheme.shapes.small,
+        shadowElevation = 4.dp,
+    ) {
+        Text(
+            text = suggestion,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier
+                .sizeIn(minHeight = ErrorSuggestionTokens.minSuggestionHeight)
+                .padding(
+                    horizontal = PaddingTokens.MidSmall,
+                    vertical = PaddingTokens.Smaller,
+                ),
+        )
+    }
+}
+
+private object ErrorSuggestionTokens {
+    val minWidth = 128.dp
+    val maxWidth = 192.dp
+    val height = 128.dp
+    val minSuggestionHeight = 24.dp
+}
+
+@Preview
+@Composable
+private fun ErrorSuggestionRowItem() = PreviewWrapper {
+    ErrorSuggestionRowItem(
+        onDetail = {},
+        onSuggestion = {},
+        error = MatchedError.example(IntRange(0, 0)),
+        modifier = Modifier,
+    )
+}

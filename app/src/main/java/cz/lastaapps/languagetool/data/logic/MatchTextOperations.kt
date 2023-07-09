@@ -12,7 +12,7 @@ internal fun MatchedText.replace(
 ): MatchedText {
 
     // empty range
-    if (range.last < range.first) {
+    if (range.last < range.first && newText == "") {
         return this
     }
 
@@ -40,6 +40,7 @@ internal fun MatchedText.replace(
     return copy(
         text = updatedText,
         errors = validMatches,
+        isTouched = true,
     )
 }
 
@@ -94,3 +95,7 @@ internal fun textDiff(
     )
 }
 
+internal fun MatchedText.getErrorIndexForCursor(cursorPosition: Int): Int =
+    errors.indexOfLast {
+        it.range.start <= cursorPosition
+    }

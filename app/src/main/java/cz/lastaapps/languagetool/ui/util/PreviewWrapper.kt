@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -26,7 +27,10 @@ fun PreviewWrapper(
         Box(
             modifier = Modifier
                 .padding(screenPadding)
-                .size(400.dp, 800.dp)
+                .sizeIn(
+                    maxWidth = 400.dp,
+                    maxHeight = 800.dp,
+                )
         ) {
             content()
         }

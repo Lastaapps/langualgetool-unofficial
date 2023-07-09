@@ -45,6 +45,7 @@ internal fun CorrectionDto.toDomain(
     text: String,
 ) = MatchedText(
     text = text,
-    errors = matches.map { it.toDomain() }.toImmutableList(),
+    errors = matches.mapIndexed { index, it -> it.toDomain(index, text) }.toImmutableList(),
     isComplete = (this.warnings?.incompleteResults ?: true).some(),
+    isTouched = false,
 )
