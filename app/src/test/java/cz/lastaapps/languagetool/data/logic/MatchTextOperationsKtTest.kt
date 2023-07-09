@@ -58,6 +58,25 @@ class MatchTextOperationsKtTest : FunSpec({
                 .shouldBe(8 withLength 11 to "at my bad")
         }
 
+        test("more tests") {
+            textDiff(
+                "Thdis sentenci wrong is.",
+                "Thddis sentenci wrong is.",
+            ).shouldBe(3 withLength 0 to "d")
+            textDiff(
+                "Thddis sentenci wrong is.",
+                "Thdis sentenci wrong is.",
+            ).shouldBe(3 withLength 1 to "")
+            textDiff(
+                "Thdis sentenci wrong is.",
+                "Thdddis sentenci wrong is.",
+            ).shouldBe(3 withLength 0 to "dd")
+            textDiff(
+                "Thdddis sentenci wrong is.",
+                "Thdis sentenci wrong is.",
+            ).shouldBe(3 withLength 2 to "")
+        }
+
         test("in practise") {
             val t1 = "Hello, world"
             val t2 = "Hello darkness my old world"

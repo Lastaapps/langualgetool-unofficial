@@ -7,6 +7,7 @@ import cz.lastaapps.languagetool.core.error.NetworkError
 
 suspend fun <T> catchingNetwork(block: suspend () -> T): Outcome<T> =
     Either.catch { block() }.mapLeft {
+        it.printStackTrace()
         // logging("catchingNetwork").e(it) { "Failed network call" }
 
         when (it::class.simpleName) {

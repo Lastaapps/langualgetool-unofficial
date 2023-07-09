@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class MatchDto(
     val message: String,
-    val shortMessage: String?, // may be ""
+    val shortMessage: String? = null, // may be ""
     val offset: Int,
     val length: Int,
     val replacements: List<ReplacementDto>,
@@ -35,12 +35,12 @@ internal data class ContextDto(
 @Serializable
 internal data class RuleDto(
     val id: String,
-    val subId: String,
+    val subId: String? = null,
     val description: String,
-    val urls: List<UrlDto>,
+    val urls: List<UrlDto>? = null,
     // https://www.w3.org/International/multilingualweb/lt/drafts/its20/its20.html#lqissue-typevalues
-    val issueType: String?,
-    val category: CategoryDto?,
+    val issueType: String? = null,
+    val category: CategoryDto? = null,
 )
 
 @Serializable
@@ -61,7 +61,7 @@ internal fun MatchDto.toDomain() = MatchedError(
     replacements = this.replacements.map { it.value }.toImmutableList(),
     ruleDescription = this.rule.description,
     errorType = this.rule.toErrorType(),
-    explanationUrl = this.rule.urls.firstOrNull()?.value,
+    explanationUrl = this.rule.urls?.firstOrNull()?.value,
 )
 
 internal fun RuleDto.toErrorType() =

@@ -1,6 +1,7 @@
 package cz.lastaapps.languagetool.data.logic
 
 import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.ui.util.moveBy
 import cz.lastaapps.languagetool.ui.util.sizeAsExclusive
 import cz.lastaapps.languagetool.ui.util.withLength
 import kotlinx.collections.immutable.toImmutableList
@@ -9,6 +10,12 @@ internal fun MatchedText.replace(
     range: IntRange,
     newText: String,
 ): MatchedText {
+
+    // empty range
+    if (range.last < range.first) {
+        return this
+    }
+
 //    val updatedText = buildString(this.text.length - range.sizeAsExclusive + newText.length) {
 //        append(text.substring(0, range.first))
 //        append(newText)
@@ -18,19 +25,14 @@ internal fun MatchedText.replace(
 
     val rangeWidth = newText.length - range.sizeAsExclusive
     val validMatches = errors.filter { error ->
-        error.range.first < range.first
-                || range.last <= error.range.last // both off by 1
+        error.range.last.inc() < range.first // end of error
+                || range.last.inc() < error.range.first // start of error
     }.map { error ->
         if (error.range.first < range.first) {
             error
         } else {
             error.copy(
-                range = error.range.let { errorRange ->
-                    IntRange(
-                        errorRange.first + rangeWidth,
-                        errorRange.last + rangeWidth,
-                    )
-                }
+                range = error.range.moveBy(rangeWidth),
             )
         }
     }.toImmutableList()
@@ -63,7 +65,7 @@ internal fun textDiff(
     }
 
     var lastDiffIndex = -1
-    for (i in 0 until kotlin.math.min(t1.length, t2.length)) {
+    for (i in 0 until kotlin.math.min(t1.length, t2.length) - firstDiffIndex) {
         if (t1[t1.lastIndex - i] != t2[t2.lastIndex - i]) {
             lastDiffIndex = i
             break
@@ -72,8 +74,13 @@ internal fun textDiff(
 
     if (lastDiffIndex == -1) {
         return when {
-            t1.length > t2.length -> 0 withLength t1.length - t2.length to ""
-            t1.length < t2.length -> 0 withLength 0 to t2.substring(0, t2.length - t1.length)
+            t1.length > t2.length -> (0 withLength t1.length - t2.length).moveBy(firstDiffIndex) to ""
+            t1.length < t2.length -> firstDiffIndex withLength 0 to t2.substring(
+                (0 until t2.length - t1.length).moveBy(
+                    firstDiffIndex
+                )
+            )
+
             else -> 0 withLength 0 to ""
         }
     }

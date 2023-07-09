@@ -11,8 +11,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
-import io.ktor.http.HttpMethod
-import io.ktor.util.AttributeKey
+import io.ktor.http.parameters
 
 internal interface LanguageToolApi {
     suspend fun correct(
@@ -33,34 +32,35 @@ internal class LanguageToolApiImpl(
         config: CorrectionConfig,
     ): Outcome<CorrectionDto> = catchingNetwork {
         val credentials = apiCredentialsProvider.provideCredentials()
-        client.submitForm(urlProvider.provideUrl() + "/client") {
-            method = HttpMethod.Post
-            setAttributes {
-                put(AttributeKey("text"), text)
+        client.submitForm(
+            url = urlProvider.provideUrl() + "/check",
+            formParameters = parameters {
+                append("text", text)
 
                 // language
-                put(AttributeKey("language"), config.language ?: "auto")
+                append("language", config.language ?: "auto")
 
                 // motherTongue
                 config.motherTongue?.let {
-                    put(AttributeKey("motherTongue"), it)
+                    append("motherTongue", it)
                 }
 
                 // level
-                put(
-                    AttributeKey("level"), if (config.isPicky) {
+                append(
+                    "level",
+                    if (config.isPicky) {
                         "picky"
                     } else {
                         "default"
-                    }
+                    },
                 )
 
                 credentials.onSome {
-                    this.put(AttributeKey("username"), it.userName)
-                    this.put(AttributeKey("apiKey"), it.apiKey)
+                    append("username", it.userName)
+                    append("apiKey", it.apiKey)
                 }
             }
-        }.body()
+        ).body()
     }
 
     override suspend fun getLanguages(): Outcome<List<SupportedLanguageDto>> = catchingNetwork {

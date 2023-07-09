@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class CorrectionDto(
-    val softWare: SoftwareDto,
-    val warnings: WarningDto?,
+    val software: SoftwareDto,
+    val warnings: WarningDto? = null,
     val language: LanguageDto,
     val matches: List<MatchDto>,
 )
@@ -19,13 +19,13 @@ internal data class SoftwareDto(
     val version: String,
     val buildDate: String,
     val apiVersion: Int,
-    val status: String?,
-    val premium: Boolean?,
+    val status: String? = null,
+    val premium: Boolean? = null,
 )
 
 @Serializable
 internal data class WarningDto(
-    val incompleteResults: Boolean?,
+    val incompleteResults: Boolean? = null,
 )
 
 @Serializable
