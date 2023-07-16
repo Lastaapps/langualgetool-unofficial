@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.ui.home
+package cz.lastaapps.languagetool.ui.features.home
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel

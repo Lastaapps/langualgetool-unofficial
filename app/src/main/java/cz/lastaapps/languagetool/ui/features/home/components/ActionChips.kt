@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.ui.home.components
+package cz.lastaapps.languagetool.ui.features.home.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement

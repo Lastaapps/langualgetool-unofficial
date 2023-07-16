@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.ui.home.components
+package cz.lastaapps.languagetool.ui.features.home.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import cz.lastaapps.languagetool.data.model.MatchedText
-import cz.lastaapps.languagetool.ui.home.logic.toAnnotatedString
+import cz.lastaapps.languagetool.ui.features.home.logic.toAnnotatedString
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
 @Composable

@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.ui.home.components
+package cz.lastaapps.languagetool.ui.features.home.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Row
@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cz.lastaapps.languagetool.ui.components.IconButtonTooltip
-import cz.lastaapps.languagetool.ui.home.model.CheckProgress
+import cz.lastaapps.languagetool.ui.features.home.model.CheckProgress
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
 @Composable

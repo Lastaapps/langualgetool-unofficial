@@ -1,6 +1,5 @@
-package cz.lastaapps.languagetool.ui.home
+package cz.lastaapps.languagetool.ui.features.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,29 +8,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import cz.lastaapps.languagetool.ui.home.components.ActionChips
-import cz.lastaapps.languagetool.ui.home.components.ErrorSuggestionRow
-import cz.lastaapps.languagetool.ui.home.components.HomeBottomAppBar
-import cz.lastaapps.languagetool.ui.home.components.TextCorrectionField
-import cz.lastaapps.languagetool.ui.home.model.CheckProgress
+import androidx.compose.ui.platform.LocalUriHandler
+import cz.lastaapps.languagetool.ui.features.home.components.ActionChips
+import cz.lastaapps.languagetool.ui.features.home.components.ErrorSuggestionRow
+import cz.lastaapps.languagetool.ui.features.home.components.HomeBottomAppBar
+import cz.lastaapps.languagetool.ui.features.home.components.TextCorrectionField
+import cz.lastaapps.languagetool.ui.features.home.model.CheckProgress
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun HomeDest(
     viewModel: HomeViewModel,
     toAbout: () -> Unit,
     toHelp: () -> Unit,
     toLanguage: () -> Unit,
-    toLogin: () -> Unit,
     toSettings: () -> Unit,
     toSpellCheck: () -> Unit,
     modifier: Modifier = Modifier,
-    snackbarHostState: SnackbarHostState =
+    hostState: SnackbarHostState =
         remember { SnackbarHostState() },
 ) {
     val state by viewModel.getState().collectAsState()
     var cursorPosition by remember { mutableStateOf(0) }
+    val uriHandler = LocalUriHandler.current
 
     val textBlock: @Composable (Modifier) -> Unit = { localModifier ->
         TextCorrectionField(
@@ -60,25 +59,27 @@ internal fun HomeDest(
             isPicky = false,
             onPickyClick = { /*TODO*/ },
             selectedLanguage = null,
-            onLanguageClick = { /*TODO*/ },
+            onLanguageClick = toLanguage,
             hasPremium = false,
-            onPremiumClick = { /*TODO*/ },
-            onHelpClick = { /*TODO*/ },
+            onPremiumClick = {
+                uriHandler.openUri("https://languagetool.org/premium_new")
+            },
+            onHelpClick = toHelp,
         )
     }
     val appBarBlock: @Composable () -> Unit = {
         HomeBottomAppBar(
             progress = CheckProgress.Ready,
             onCheck = { viewModel.onCheckRequest() },
-            onSystemSpellCheck = { /*TODO*/ },
-            onHelpClick = { /*TODO*/ },
-            onSettings = { /*TODO*/ },
-            onAbout = { /*TODO*/ },
+            onSystemSpellCheck = toSpellCheck,
+            onHelpClick = toHelp,
+            onSettings = toSettings,
+            onAbout = toAbout,
         )
     }
 
     HomeScreenScaffold(
-        snackbarHostState = snackbarHostState,
+        snackbarHostState = hostState,
         text = textBlock,
         actionChips = chipsBlock,
         errorSuggestions = errorSuggestions,

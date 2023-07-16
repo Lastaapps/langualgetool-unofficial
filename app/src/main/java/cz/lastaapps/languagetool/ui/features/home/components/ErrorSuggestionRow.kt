@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.ui.home.components
+package cz.lastaapps.languagetool.ui.features.home.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -24,9 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,11 +32,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import arrow.fx.stm.internal.index
+import cz.lastaapps.languagetool.data.logic.getErrorIndexForCursor
 import cz.lastaapps.languagetool.data.model.ErrorType
 import cz.lastaapps.languagetool.data.model.MatchedError
 import cz.lastaapps.languagetool.data.model.MatchedText
-import cz.lastaapps.languagetool.data.logic.*
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 import cz.lastaapps.languagetool.ui.util.PreviewWrapper
 

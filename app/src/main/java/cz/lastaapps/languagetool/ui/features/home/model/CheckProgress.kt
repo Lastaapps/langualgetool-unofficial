@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.ui.home.model
+package cz.lastaapps.languagetool.ui.features.home.model
 
 import kotlin.time.Duration
 

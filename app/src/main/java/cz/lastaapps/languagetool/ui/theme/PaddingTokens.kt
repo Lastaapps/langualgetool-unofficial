@@ -14,7 +14,7 @@ object PaddingTokens {
 
     object More {
         val Screen = MidSmall
-        val Dialog = Medium
+        val Dialog = MidLarge
         val ScrollBottomSpace = 64.dp
     }
 }
