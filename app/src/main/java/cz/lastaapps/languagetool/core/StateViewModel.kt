@@ -8,10 +8,14 @@ import androidx.lifecycle.viewModelScope
 import arrow.fx.coroutines.resource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -22,7 +26,7 @@ open class StateViewModel<State : VMState>(initial: State) : ViewModel() {
     protected fun updateState(function: State.() -> State) =
         state.update(function)
 
-    protected fun lastState() = state.value
+    protected fun latestState() = state.value
 
     val flow = state.asStateFlow()
     val flowState
@@ -30,12 +34,16 @@ open class StateViewModel<State : VMState>(initial: State) : ViewModel() {
         get() = state.collectAsStateWithLifecycle()
 
     private var didAppear: Boolean = false
-    protected fun runOnlyOnce(function: () -> Unit): Unit {
-        if (didAppear) {
-            return
+    private val didAppearMutex = Mutex()
+    protected fun launchOnlyOnce(function: suspend () -> Unit): Unit = launchVM {
+        didAppearMutex.withLock {
+            if (didAppear) {
+                return@launchVM
+            } else {
+                didAppear = true
+                function()
+            }
         }
-        didAppear = true
-        function()
     }
 
     protected suspend fun <R> withLoading(
@@ -58,6 +66,9 @@ fun ViewModel.launchVM(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ) = launchVMJob(context, start, block).let { }
+
+context(ViewModel)
+fun <T> Flow<T>.launchInVM() = this.launchIn(viewModelScope)
 
 @Immutable
 interface VMState

@@ -1,71 +1,92 @@
 package cz.lastaapps.languagetool.ui.features.home
 
 import androidx.compose.runtime.Immutable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import arrow.core.Either
+import cz.lastaapps.languagetool.core.StateViewModel
+import cz.lastaapps.languagetool.core.VMState
+import cz.lastaapps.languagetool.core.error.DomainError
+import cz.lastaapps.languagetool.core.launchInVM
+import cz.lastaapps.languagetool.core.launchVM
+import cz.lastaapps.languagetool.data.AppPreferences
 import cz.lastaapps.languagetool.data.LangToolRepository
+import cz.lastaapps.languagetool.data.model.toDomain
 import cz.lastaapps.languagetool.domain.logic.replace
 import cz.lastaapps.languagetool.domain.logic.textDiff
+import cz.lastaapps.languagetool.domain.model.Language
 import cz.lastaapps.languagetool.domain.model.MatchedError
 import cz.lastaapps.languagetool.domain.model.MatchedText
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.onEach
 
 internal class HomeViewModel(
     private val repo: LangToolRepository,
-) : ViewModel() {
+    private val appPreferences: AppPreferences,
+) : StateViewModel<HomeState>(HomeState()) {
 
-    private val state = MutableStateFlow(HomeState())
-    fun getState() = state.asStateFlow()
+    fun onAppear() = launchOnlyOnce {
+        appPreferences.getPicky().onEach {
+            println("FINDME: Updated to picky: $it")
+            updateState { copy(isPicky = it) }
+        }.launchInVM()
 
-    fun onCheckRequest() = viewModelScope.launch {
-        when (val res = repo.correctText(state.value.matched.text)) {
-            is Either.Right -> {
-                state.update {
-                    it.copy(
-                        matched = res.value,
-                    )
+        appPreferences.getLanguage().onEach {
+            println("FINDME: Updated to lang: $it")
+            updateState { copy(language = it?.toDomain()) }
+        }.launchInVM()
+    }
+
+    fun onCheckRequest() = launchVM {
+        when (val res = repo.correctText(latestState().matched.text)) {
+            is Either.Right ->
+                updateState {
+                    copy(matched = res.value)
                 }
-            }
 
-            is Either.Left -> {
-                // TODO("Report error $res")
+            is Either.Left -> updateState {
+                copy(error = res.value)
             }
         }
-    }.let { }
+    }
 
     fun onTextChanged(newText: String) {
-        state.update {
+        updateState {
 
-            val currentMatched = it.matched
+            val currentMatched = matched
             val currentText = currentMatched.text
 
             val diff = textDiff(currentText, newText)
 
-            it.copy(
+            copy(
                 matched = currentMatched.replace(diff.first, diff.second),
             )
         }
     }
 
     fun applySuggestion(error: MatchedError, suggestion: String) {
-        state.updateAndGet {
-            val currentMatched = it.matched
-            it.copy(
-                matched = currentMatched.replace(error.range, suggestion),
+        updateState {
+            copy(
+                matched = matched.replace(error.range, suggestion),
             )
-        }.matched.errors.takeIf { it.isEmpty() }?.let {
+        }
+        latestState().matched.errors.takeIf { it.isEmpty() }?.let {
             onCheckRequest()
         }
     }
 
+    fun dismissError() {
+        updateState { copy(error = null) }
+    }
+
+    fun setIsPicky(value: Boolean) = launchVM {
+        updateState { copy(isPicky = value) }
+        appPreferences.setPicky(value)
+    }
 }
 
 @Immutable
 internal data class HomeState(
     val matched: MatchedText = MatchedText.empty,
-)
+    val error: DomainError? = null,
+    val maxChars: Int = 20_000, // TODO
+    val isPicky: Boolean = false,
+    val language: Language? = null,
+) : VMState

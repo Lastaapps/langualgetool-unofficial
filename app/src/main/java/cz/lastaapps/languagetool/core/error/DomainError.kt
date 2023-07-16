@@ -5,3 +5,6 @@ sealed interface DomainError {
 
     data class Unknown(override val throwable: Throwable?) : DomainError
 }
+
+fun DomainError.getMessage(): String = "TODO" // TODO
+

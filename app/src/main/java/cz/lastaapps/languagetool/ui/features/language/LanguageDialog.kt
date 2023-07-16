@@ -54,7 +54,7 @@ internal fun LanguageDialogDest(
 internal fun LanguageDialogContent(
     isLoading: Boolean,
     languages: ImmutableList<Language>,
-    onLangSelected: (Language) -> Unit,
+    onLangSelected: (Language?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -73,6 +73,15 @@ internal fun LanguageDialogContent(
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                item {
+                    WrapClick(onClick = { onLangSelected(null) }) {
+                        Text(
+                            text = "Auto",
+                            style = MaterialTheme.typography.labelMedium,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
                 items(languages) { lang ->
                     WrapClick(onClick = { onLangSelected(lang) }) {
                         Text(

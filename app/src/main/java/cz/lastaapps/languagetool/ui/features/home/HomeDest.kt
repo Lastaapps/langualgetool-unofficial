@@ -2,18 +2,21 @@ package cz.lastaapps.languagetool.ui.features.home
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import cz.lastaapps.languagetool.core.error.getMessage
 import cz.lastaapps.languagetool.ui.features.home.components.ActionChips
 import cz.lastaapps.languagetool.ui.features.home.components.ErrorSuggestionRow
 import cz.lastaapps.languagetool.ui.features.home.components.HomeBottomAppBar
 import cz.lastaapps.languagetool.ui.features.home.components.TextCorrectionField
 import cz.lastaapps.languagetool.ui.features.home.model.CheckProgress
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -28,16 +31,28 @@ internal fun HomeDest(
     hostState: SnackbarHostState =
         remember { SnackbarHostState() },
 ) {
-    val state by viewModel.getState().collectAsState()
+    val state by viewModel.flowState
     var cursorPosition by remember { mutableStateOf(0) }
     val uriHandler = LocalUriHandler.current
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(viewModel) {
+        viewModel.onAppear()
+    }
+
+    LaunchedEffect(state.error) {
+        state.error?.let {
+            scope.launch { hostState.showSnackbar(it.getMessage()) }
+            viewModel.dismissError()
+        }
+    }
 
     val textBlock: @Composable (Modifier) -> Unit = { localModifier ->
         TextCorrectionField(
             matched = state.matched,
             onText = viewModel::onTextChanged,
             onCursor = { cursorPosition = it },
-            charLimit = 20_000, // TODO
+            charLimit = state.maxChars,
             modifier = localModifier,
         )
     }
@@ -55,10 +70,12 @@ internal fun HomeDest(
                 viewModel.onTextChanged(it)
                 viewModel.onCheckRequest()
             },
-            onError = { /*TODO*/ },
-            isPicky = false,
-            onPickyClick = { /*TODO*/ },
-            selectedLanguage = null,
+            onError = {
+                scope.launch { hostState.showSnackbar(it.getMessage()) }
+            },
+            isPicky = state.isPicky,
+            onPickyClick = { viewModel.setIsPicky(!state.isPicky) },
+            selectedLanguage = state.language?.name,
             onLanguageClick = toLanguage,
             hasPremium = false,
             onPremiumClick = {
