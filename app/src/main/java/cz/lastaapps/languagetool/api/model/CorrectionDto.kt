@@ -11,6 +11,7 @@ internal data class CorrectionDto(
     val warnings: WarningDto? = null,
     val language: LanguageDto,
     val matches: List<MatchDto>,
+    val hiddenMatches: List<MatchDto> = emptyList(),
 )
 
 @Serializable
@@ -45,7 +46,10 @@ internal fun CorrectionDto.toDomain(
     text: String,
 ) = MatchedText(
     text = text,
-    errors = matches.mapIndexed { index, it -> it.toDomain(index, text) }.toImmutableList(),
+    errors = (matches + hiddenMatches)
+        .mapIndexed { index, it -> it.toDomain(index, text) }
+        .sortedBy { it.range.first }
+        .toImmutableList(),
     isComplete = (this.warnings?.incompleteResults ?: true).some(),
     isTouched = false,
 )

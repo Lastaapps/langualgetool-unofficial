@@ -55,6 +55,9 @@ internal class LanguageToolApiImpl(
                     },
                 )
 
+                // hidden rules results
+                append("enableHiddenRules", config.hiddenRules.toString())
+
                 credentials.onSome {
                     append("username", it.userName)
                     append("apiKey", it.apiKey)

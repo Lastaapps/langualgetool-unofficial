@@ -17,7 +17,8 @@ internal data class MatchedText(
             get() = MatchedText(
 //                text = "",
 //                text = "This sentenci seplling wrong is.",
-                text = "Errors will be underlined in different colours: we will mark seplling errors with red underilnes. Furthermore grammar error's are highlighted in yellow.",
+                text = "So how are you doing thoday?",
+                //text = "Errors will be underlined in different colours: we will mark seplling errors with red underilnes. Furthermore grammar error's are highlighted in yellow.",
                 errors = persistentListOf(),
                 isComplete = None,
                 isTouched = true,
@@ -35,6 +36,7 @@ internal data class MatchedError(
     val ruleDescription: String,
     val errorType: ErrorType,
     val explanationUrl: String?,
+    val isPremium: Boolean,
 ) {
     companion object {
         fun example(range: IntRange) =
@@ -48,6 +50,7 @@ internal data class MatchedError(
                 ruleDescription = "Use of 'a' vs. 'an'",
                 errorType = ErrorType.PUNCTUATION,
                 explanationUrl = "",
+                isPremium = true,
             )
     }
 }

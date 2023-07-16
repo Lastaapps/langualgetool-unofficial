@@ -41,6 +41,7 @@ internal data class RuleDto(
     // https://www.w3.org/International/multilingualweb/lt/drafts/its20/its20.html#lqissue-typevalues
     val issueType: String? = null,
     val category: CategoryDto? = null,
+    val isPremium: Boolean = false,
 )
 
 @Serializable
@@ -68,6 +69,7 @@ internal fun MatchDto.toDomain(
         ruleDescription = this.rule.description,
         errorType = this.rule.toErrorType(),
         explanationUrl = this.rule.urls?.firstOrNull()?.value,
+        isPremium = rule.isPremium,
     )
 }
 

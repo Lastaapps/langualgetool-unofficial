@@ -24,12 +24,10 @@ internal class HomeViewModel(
 
     fun onAppear() = launchOnlyOnce {
         appPreferences.getPicky().onEach {
-            println("FINDME: Updated to picky: $it")
             updateState { copy(isPicky = it) }
         }.launchInVM()
 
         appPreferences.getLanguage().onEach {
-            println("FINDME: Updated to lang: $it")
             updateState { copy(language = it?.toDomain()) }
         }.launchInVM()
     }

@@ -141,7 +141,6 @@ internal fun TextCorrectionField(
             }
         },
         shape = MaterialTheme.shapes.extraLarge,
-        modifier = modifier,
         colors = TextFieldDefaults.colors(
             disabledIndicatorColor = Color.Transparent,
             errorIndicatorColor = Color.Transparent,
@@ -153,6 +152,7 @@ internal fun TextCorrectionField(
             autoCorrect = false,
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.None,
-        )
+        ),
+        modifier = modifier,
     )
 }
