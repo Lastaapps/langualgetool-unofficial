@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cz.lastaapps.languagetool.domain.logic.getErrorIndexForCursor
+import cz.lastaapps.languagetool.domain.model.CheckProgress
 import cz.lastaapps.languagetool.domain.model.ErrorType
 import cz.lastaapps.languagetool.domain.model.MatchedError
 import cz.lastaapps.languagetool.domain.model.MatchedText
@@ -49,9 +50,11 @@ import cz.lastaapps.languagetool.ui.util.PreviewWrapper
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun ErrorSuggestionRow(
+    progress: CheckProgress,
     cursorPosition: Int,
     matched: MatchedText,
     onApplySuggestion: (MatchedError, String) -> Unit,
+    onDetail: (MatchedError) -> Unit,
     errorSuggestionsRowState: LazyListState = rememberLazyListState(),
 ) {
     val errorIndex = remember(matched, cursorPosition) {
@@ -70,9 +73,13 @@ internal fun ErrorSuggestionRow(
             .animateContentSize(),
         horizontalArrangement = Arrangement.spacedBy(PaddingTokens.MidSmall),
     ) {
+        if (progress == CheckProgress.Processing) {
+            return@LazyRow
+        }
+
         items(matched.errors, key = { it.index }) { error ->
             ErrorSuggestionRowItem(
-                onDetail = { /* TODO */ },
+                onDetail = { onDetail(error) },
                 onSuggestion = { onApplySuggestion(error, it) },
                 error = error,
                 modifier = Modifier.animateItemPlacement(),

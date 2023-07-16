@@ -15,7 +15,6 @@ import cz.lastaapps.languagetool.ui.features.home.components.ActionChips
 import cz.lastaapps.languagetool.ui.features.home.components.ErrorSuggestionRow
 import cz.lastaapps.languagetool.ui.features.home.components.HomeBottomAppBar
 import cz.lastaapps.languagetool.ui.features.home.components.TextCorrectionField
-import cz.lastaapps.languagetool.ui.features.home.model.CheckProgress
 import kotlinx.coroutines.launch
 
 
@@ -49,6 +48,7 @@ internal fun HomeDest(
 
     val textBlock: @Composable (Modifier) -> Unit = { localModifier ->
         TextCorrectionField(
+            progress = state.progress,
             matched = state.matched,
             onText = viewModel::onTextChanged,
             onCursor = { cursorPosition = it },
@@ -58,9 +58,11 @@ internal fun HomeDest(
     }
     val errorSuggestions: @Composable () -> Unit = {
         ErrorSuggestionRow(
+            progress = state.progress,
             cursorPosition = cursorPosition,
             matched = state.matched,
             onApplySuggestion = viewModel::applySuggestion,
+            onDetail = { /* TODO */ }
         )
     }
     val chipsBlock: @Composable () -> Unit = {
@@ -86,7 +88,7 @@ internal fun HomeDest(
     }
     val appBarBlock: @Composable () -> Unit = {
         HomeBottomAppBar(
-            progress = CheckProgress.Ready,
+            progress = state.progress,
             onCheck = { viewModel.onCheckRequest() },
             onSystemSpellCheck = toSpellCheck,
             onHelpClick = toHelp,

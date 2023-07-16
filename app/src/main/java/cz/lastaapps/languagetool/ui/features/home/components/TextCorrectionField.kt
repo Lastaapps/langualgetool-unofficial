@@ -1,6 +1,12 @@
 package cz.lastaapps.languagetool.ui.features.home.components
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,17 +27,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import cz.lastaapps.languagetool.domain.model.CheckProgress
 import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.features.home.logic.toAnnotatedString
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
 @Composable
 internal fun TextCorrectionField(
+    progress: CheckProgress,
     matched: MatchedText,
     onText: (String) -> Unit,
     onCursor: (Int) -> Unit,
@@ -79,6 +88,7 @@ internal fun TextCorrectionField(
         errors = matched.errors.size,
         isClean = !matched.isTouched,
         modifier = modifier,
+        enabled = progress != CheckProgress.Processing,
     )
 }
 
@@ -90,14 +100,27 @@ internal fun TextCorrectionField(
     errors: Int,
     isClean: Boolean,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     val chars = text.text.length
+
+    val alpha by rememberInfiniteTransition(label = "TextField alpha")
+        .animateFloat(
+            initialValue = .6f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "TextField alpha"
+        )
 
     TextField(
         value = text,
         onValueChange = {
             onText(it)
         },
+        enabled = enabled,
         placeholder = {
             Text(text = "Enter the text to spell-check...")
         },
@@ -137,6 +160,11 @@ internal fun TextCorrectionField(
 
                 Text(
                     "$chars/$charLimit",
+                    color = if (chars > charLimit) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        Color.Unspecified
+                    },
                 )
             }
         },
@@ -153,6 +181,13 @@ internal fun TextCorrectionField(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.None,
         ),
-        modifier = modifier,
+        modifier = modifier
+            .alpha(
+                if (enabled) {
+                    1f
+                } else {
+                    alpha
+                }
+            ),
     )
 }
