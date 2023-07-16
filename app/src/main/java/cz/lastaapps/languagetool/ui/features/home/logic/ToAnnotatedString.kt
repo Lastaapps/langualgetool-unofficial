@@ -7,8 +7,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import cz.lastaapps.languagetool.data.model.ErrorType
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.model.ErrorType
+import cz.lastaapps.languagetool.domain.model.MatchedText
 
 @Composable
 internal fun MatchedText.toAnnotatedString() = remember(this) {

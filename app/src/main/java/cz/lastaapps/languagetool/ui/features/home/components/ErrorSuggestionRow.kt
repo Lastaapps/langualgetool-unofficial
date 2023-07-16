@@ -32,10 +32,10 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import cz.lastaapps.languagetool.data.logic.getErrorIndexForCursor
-import cz.lastaapps.languagetool.data.model.ErrorType
-import cz.lastaapps.languagetool.data.model.MatchedError
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.logic.getErrorIndexForCursor
+import cz.lastaapps.languagetool.domain.model.ErrorType
+import cz.lastaapps.languagetool.domain.model.MatchedError
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 import cz.lastaapps.languagetool.ui.util.PreviewWrapper
 

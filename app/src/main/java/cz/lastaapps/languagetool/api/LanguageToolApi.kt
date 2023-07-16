@@ -4,9 +4,9 @@ import cz.lastaapps.languagetool.api.model.CorrectionDto
 import cz.lastaapps.languagetool.api.model.SupportedLanguageDto
 import cz.lastaapps.languagetool.core.Outcome
 import cz.lastaapps.languagetool.core.util.catchingNetwork
-import cz.lastaapps.languagetool.data.ApiCredentialsProvider
-import cz.lastaapps.languagetool.data.UrlProvider
-import cz.lastaapps.languagetool.data.model.CorrectionConfig
+import cz.lastaapps.languagetool.data.provider.ApiCredentialsProvider
+import cz.lastaapps.languagetool.data.provider.UrlProvider
+import cz.lastaapps.languagetool.domain.model.CorrectionConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm

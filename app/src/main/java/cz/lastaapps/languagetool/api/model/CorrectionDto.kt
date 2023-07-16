@@ -1,7 +1,7 @@
 package cz.lastaapps.languagetool.api.model
 
 import arrow.core.some
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.Serializable
 

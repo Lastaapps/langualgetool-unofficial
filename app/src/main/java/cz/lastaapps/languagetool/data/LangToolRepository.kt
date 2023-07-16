@@ -3,8 +3,9 @@ package cz.lastaapps.languagetool.data
 import cz.lastaapps.languagetool.api.LanguageToolApi
 import cz.lastaapps.languagetool.api.model.toDomain
 import cz.lastaapps.languagetool.core.Outcome
-import cz.lastaapps.languagetool.data.model.Language
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.data.provider.CorrectionConfigProvider
+import cz.lastaapps.languagetool.domain.model.Language
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

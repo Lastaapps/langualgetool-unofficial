@@ -1,7 +1,7 @@
 package cz.lastaapps.languagetool.api.model
 
-import cz.lastaapps.languagetool.data.model.ErrorType
-import cz.lastaapps.languagetool.data.model.MatchedError
+import cz.lastaapps.languagetool.domain.model.ErrorType
+import cz.lastaapps.languagetool.domain.model.MatchedError
 import cz.lastaapps.languagetool.ui.util.withLength
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.serialization.Serializable

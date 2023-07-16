@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.features.home.logic.toAnnotatedString
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 

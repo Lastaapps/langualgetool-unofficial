@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import cz.lastaapps.languagetool.core.error.CommonErrors
 import cz.lastaapps.languagetool.core.error.DomainError
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.components.IconButtonTooltip
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 

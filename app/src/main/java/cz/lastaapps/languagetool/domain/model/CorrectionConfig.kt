@@ -1,4 +1,4 @@
-package cz.lastaapps.languagetool.data.model
+package cz.lastaapps.languagetool.domain.model
 
 data class CorrectionConfig(
     val language: String?,

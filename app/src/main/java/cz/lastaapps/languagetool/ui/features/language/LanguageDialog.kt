@@ -14,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import cz.lastaapps.languagetool.data.model.Language
+import cz.lastaapps.languagetool.domain.model.Language
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 import cz.lastaapps.languagetool.ui.util.WrapClick
 import kotlinx.collections.immutable.ImmutableList

@@ -1,5 +1,6 @@
 package cz.lastaapps.languagetool.data.logic
 
+import cz.lastaapps.languagetool.domain.logic.textDiff
 import cz.lastaapps.languagetool.ui.util.withLength
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

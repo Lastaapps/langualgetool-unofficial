@@ -1,6 +1,6 @@
-package cz.lastaapps.languagetool.data.logic
+package cz.lastaapps.languagetool.domain.logic
 
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.util.moveBy
 import cz.lastaapps.languagetool.ui.util.sizeAsExclusive
 import cz.lastaapps.languagetool.ui.util.withLength

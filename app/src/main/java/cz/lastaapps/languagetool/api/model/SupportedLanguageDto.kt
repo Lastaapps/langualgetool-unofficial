@@ -1,6 +1,6 @@
 package cz.lastaapps.languagetool.api.model
 
-import cz.lastaapps.languagetool.data.model.Language
+import cz.lastaapps.languagetool.domain.model.Language
 import kotlinx.serialization.Serializable
 
 @Serializable

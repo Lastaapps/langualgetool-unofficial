@@ -1,17 +1,18 @@
 package cz.lastaapps.languagetool.di
 
-import arrow.core.None
-import arrow.core.Option
 import cz.lastaapps.languagetool.api.LanguageToolApi
 import cz.lastaapps.languagetool.api.LanguageToolApiImpl
 import cz.lastaapps.languagetool.api.createHttpClient
-import cz.lastaapps.languagetool.data.ApiCredentialsProvider
-import cz.lastaapps.languagetool.data.CorrectionConfigProvider
+import cz.lastaapps.languagetool.data.AppPreferences
+import cz.lastaapps.languagetool.data.AppPreferencesImpl
 import cz.lastaapps.languagetool.data.LangToolRepository
 import cz.lastaapps.languagetool.data.LangToolRepositoryImpl
-import cz.lastaapps.languagetool.data.UrlProvider
-import cz.lastaapps.languagetool.data.model.ApiCredentials
-import cz.lastaapps.languagetool.data.model.CorrectionConfig
+import cz.lastaapps.languagetool.data.provider.ApiCredentialsProvider
+import cz.lastaapps.languagetool.data.provider.ApiCredentialsProviderImpl
+import cz.lastaapps.languagetool.data.provider.CorrectionConfigProvider
+import cz.lastaapps.languagetool.data.provider.CorrectionConfigProviderImpl
+import cz.lastaapps.languagetool.data.provider.UrlProvider
+import cz.lastaapps.languagetool.data.provider.UrlProviderImpl
 import cz.lastaapps.languagetool.ui.features.home.HomeViewModel
 import cz.lastaapps.languagetool.ui.features.language.LanguageDialogViewModel
 import kotlinx.datetime.Clock
@@ -30,26 +31,9 @@ internal val module = module {
 
     singleOf(::LangToolRepositoryImpl) bind LangToolRepository::class
     factoryOf(::LanguageToolApiImpl) bind LanguageToolApi::class
+    singleOf(::AppPreferencesImpl) bind AppPreferences::class
 
-    factory {
-        object : UrlProvider {
-            override suspend fun provideUrl(): String {
-                return "https://api.languagetool.org/v2"
-            }
-        }
-    } bind UrlProvider::class
-    factory {
-        object : CorrectionConfigProvider {
-            override suspend fun getCorrectionConfig(): CorrectionConfig {
-                return CorrectionConfig(null, false, null)
-            }
-        }
-    } bind CorrectionConfigProvider::class
-    factory {
-        object : ApiCredentialsProvider {
-            override suspend fun provideCredentials(): Option<ApiCredentials> {
-                return None
-            }
-        }
-    } bind ApiCredentialsProvider::class
+    factoryOf(::UrlProviderImpl) bind UrlProvider::class
+    factoryOf(::CorrectionConfigProviderImpl) bind CorrectionConfigProvider::class
+    factoryOf(::ApiCredentialsProviderImpl) bind ApiCredentialsProvider::class
 }

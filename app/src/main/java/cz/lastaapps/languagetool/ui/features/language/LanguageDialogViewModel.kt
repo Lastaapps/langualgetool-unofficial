@@ -6,7 +6,7 @@ import cz.lastaapps.languagetool.core.VMState
 import cz.lastaapps.languagetool.core.error.DomainError
 import cz.lastaapps.languagetool.core.launchVM
 import cz.lastaapps.languagetool.data.LangToolRepository
-import cz.lastaapps.languagetool.data.model.Language
+import cz.lastaapps.languagetool.domain.model.Language
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

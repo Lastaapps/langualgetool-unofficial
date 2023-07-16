@@ -1,10 +1,9 @@
-package cz.lastaapps.languagetool.data.model
+package cz.lastaapps.languagetool.domain.model
 
 import arrow.core.None
 import arrow.core.Option
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.serialization.descriptors.PrimitiveKind
 
 internal data class MatchedText(
     val text: String,

@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import cz.lastaapps.languagetool.data.LangToolRepository
-import cz.lastaapps.languagetool.data.logic.replace
-import cz.lastaapps.languagetool.data.logic.textDiff
-import cz.lastaapps.languagetool.data.model.MatchedError
-import cz.lastaapps.languagetool.data.model.MatchedText
+import cz.lastaapps.languagetool.domain.logic.replace
+import cz.lastaapps.languagetool.domain.logic.textDiff
+import cz.lastaapps.languagetool.domain.model.MatchedError
+import cz.lastaapps.languagetool.domain.model.MatchedText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
