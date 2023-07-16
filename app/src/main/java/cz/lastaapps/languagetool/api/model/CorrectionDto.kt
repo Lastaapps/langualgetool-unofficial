@@ -47,8 +47,8 @@ internal fun CorrectionDto.toDomain(
 ) = MatchedText(
     text = text,
     errors = (matches + hiddenMatches)
+        .sortedBy { it.offset }
         .mapIndexed { index, it -> it.toDomain(index, text) }
-        .sortedBy { it.range.first }
         .toImmutableList(),
     isComplete = (this.warnings?.incompleteResults ?: true).some(),
     isTouched = false,
