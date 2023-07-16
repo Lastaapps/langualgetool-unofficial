@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import cz.lastaapps.languagetool.ui.components.saneDialog
+import cz.lastaapps.languagetool.ui.features.dialogs.HelpDialogContent
+import cz.lastaapps.languagetool.ui.features.dialogs.SpellcheckDialog
 import cz.lastaapps.languagetool.ui.features.home.HomeDest
 import cz.lastaapps.languagetool.ui.features.language.LanguageDialogDest
 import org.koin.androidx.compose.koinViewModel
@@ -41,8 +43,8 @@ fun Router(
                     navController.navigateUp()
                 })
         }
-        saneDialog(Dests.SPELLCHECK, navUp) { Text("Spellcheck") }
-        saneDialog(Dests.HELP, navUp) { Text("Help") }
+        saneDialog(Dests.SPELLCHECK, navUp) { SpellcheckDialog() }
+        saneDialog(Dests.HELP, navUp) { HelpDialogContent() }
         saneDialog(Dests.ABOUT, navUp) { Text("About") }
     }
 }
