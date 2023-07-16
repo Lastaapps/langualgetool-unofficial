@@ -35,10 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.domain.logic.getErrorIndexForCursor
 import cz.lastaapps.languagetool.domain.model.CheckProgress
 import cz.lastaapps.languagetool.domain.model.ErrorType
@@ -131,7 +133,7 @@ internal fun ErrorSuggestionRowItem(
                 if (error.isPremium) {
                     Icon(
                         Icons.Default.Star,
-                        contentDescription = "Premium error",
+                        contentDescription = stringResource(id = R.string.label_premium_error),
                         tint = Color(0xFFFBC02D)
                     )
                 }
@@ -146,10 +148,7 @@ internal fun ErrorSuggestionRowItem(
                 style = MaterialTheme.typography.labelSmall,
             )
 
-            FlowRow(
-                // horizontalArrangement = Arrangement.spacedBy(PaddingTokens.Small),
-                // verticalAlignment = Alignment.Top,
-            ) {
+            FlowRow {
                 error.replacements.forEach { suggestion ->
                     SuggestionItem(
                         onClick = { onSuggestion(suggestion) },

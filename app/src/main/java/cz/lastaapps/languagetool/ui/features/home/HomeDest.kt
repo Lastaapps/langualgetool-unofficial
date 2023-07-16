@@ -83,7 +83,6 @@ internal fun HomeDest(
             onPremiumClick = {
                 uriHandler.openUri("https://languagetool.org/premium_new")
             },
-            onHelpClick = toHelp,
         )
     }
     val appBarBlock: @Composable () -> Unit = {

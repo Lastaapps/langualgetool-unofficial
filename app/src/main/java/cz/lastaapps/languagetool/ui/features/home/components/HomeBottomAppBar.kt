@@ -27,6 +27,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.domain.model.CheckProgress
 import cz.lastaapps.languagetool.ui.components.IconButtonTooltip
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
@@ -53,22 +55,22 @@ fun HomeBottomAppBar(
             IconButtonTooltip(
                 onClick = onSystemSpellCheck,
                 icon = Icons.Outlined.Keyboard,
-                contentDescription = "Spell Check",
+                contentDescription = stringResource(id = R.string.button_spell_check),
             )
             IconButtonTooltip(
                 onClick = onHelpClick,
                 icon = Icons.Default.HelpOutline,
-                contentDescription = "Help",
+                contentDescription = stringResource(id = R.string.button_help),
             )
             IconButtonTooltip(
                 onClick = onSettings,
                 icon = Icons.Outlined.Settings,
-                contentDescription = "Settings",
+                contentDescription = stringResource(id = R.string.button_settings),
             )
             IconButtonTooltip(
                 onClick = onAbout,
                 icon = Icons.Outlined.Info,
-                contentDescription = "About",
+                contentDescription = stringResource(id = R.string.button_about),
             )
         }
 
@@ -76,10 +78,10 @@ fun HomeBottomAppBar(
             text = {
                 Text(
                     when (progress) {
-                        CheckProgress.Processing -> "Working"
-                        is CheckProgress.RateLimit -> "Limited"
-                        CheckProgress.Ready -> "Ready"
-                    },
+                        CheckProgress.Processing -> R.string.label_processing
+                        is CheckProgress.RateLimit -> R.string.label_limited
+                        CheckProgress.Ready -> R.string.label_ready
+                    }.let { stringResource(id = it) },
                     modifier = Modifier.animateContentSize(),
                 )
             },
@@ -105,7 +107,7 @@ fun HomeBottomAppBar(
                     CheckProgress.Ready ->
                         Icon(
                             Icons.Default.Done,
-                            contentDescription = "Validate input",
+                            contentDescription = null,
                         )
                 }
             },

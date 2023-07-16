@@ -9,6 +9,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
 @Composable
@@ -19,13 +21,13 @@ internal fun SpellcheckDialog(
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Spellcheck",
+            text = stringResource(id = R.string.spellcheck_title),
             style = MaterialTheme.typography.headlineMedium,
         )
         Spacer(Modifier.height(PaddingTokens.MidSmall))
 
         Text(
-            text = "TODO why is spellcheck not working",
+            text = stringResource(id = R.string.spellcheck_description),
             style = MaterialTheme.typography.bodyMedium,
         )
     }

@@ -1,3 +1,70 @@
 <resources>
     <string name="app_name">LanguageTool</string>
+
+    <string name="help_disclaimer_title">Disclaimer</string>
+    <string name="help_disclaimer_description">
+        This app was not developed by LanguageTool.org.
+        It uses the official public API for text checking.
+    </string>
+    <string name="help_premium_title">Premium</string>
+    <string name="help_premium_description">
+        Without Premium subscription,
+        this app also shows hidden rules returned from the server,
+        but the matches don\'t include suggestions or explanations.
+        Upgrade to Premium or host the server yourself.
+    </string>
+    <string name="help_rate_limit_title">Rate limit</string>
+    <string name="help_rate_limit_description">
+        The free API is limited to 20 requests per minute per IP address.
+        Because of that, you can check the text only every 6 seconds,
+        so you don\'t block the IP (you may not be alone using the app).
+        Premium limits are much higher.
+        If you set a username and API key (e.g. use premium)
+        or use custom BE url, the rate-limit will be almost removed.
+    </string>
+    <string name="help_picky_title">Picky mode</string>
+    <string name="help_picky_description">
+        The picky mode checks your text with additional rules.
+        Use it to check formal texts.
+    </string>
+    <string name="help_language_title">Auto language</string>
+    <string name="help_language_description">
+        The language is detected automatically.
+        Make sure the language you are trying to use is supported
+        by LanguageTool. For example, Czech is not supported,
+        so it may be detected as Slovak.
+    </string>
+
+    <string name="spellcheck_title">Spellcheck</string>
+    <string name="spellcheck_description">
+        This app also supports the system spellchecker (don\'t get confused with autocorrection).
+\n
+        To enable the spellchecker, open your settings and go to the section Language &amp; Input → Spellchecker. Select LanguageTool Unofficial as your default spellchecker.
+\n
+        You may encounter problems on some devices because the Android ecosystem is diverse. Some of my devices support this, some don\'t. Also, some keyboards ignore or don\'t support third-party spell checkers.
+\n
+        If you encounter problems, please report them, but most likely they cannot be resolved.
+\n
+        You can copy and paste text into this app.
+    </string>
+
+    <string name="button_copy">Copy</string>
+    <string name="button_paste">Paste</string>
+    <string name="label_picky">Picky</string>
+    <string name="label_language_auto">Auto</string>
+    <string name="label_premium_error">Premium error</string>
+    <string name="button_spell_check">Spell check</string>
+    <string name="button_help">Help</string>
+    <string name="button_settings">Settings</string>
+    <string name="button_about">About</string>
+    <string name="label_processing">Checking</string>
+    <string name="label_limited">Limited</string>
+    <string name="label_ready">Ready</string>
+    <string name="placeholder_enter_text">Enter the text to spell check…</string>
+    <string name="label_validation_summary">%1$d errors, %2$s</string>
+    <string name="label_validated">Validated</string>
+    <string name="label_dirty">Dirty</string>
+    <string name="title_app_name">LanguageTool</string>
+    <string name="title_app_subtitle">Unofficial</string>
+    <string name="title_select_language">Select language</string>
 </resources>

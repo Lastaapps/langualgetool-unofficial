@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.core.error.CommonErrors
 import cz.lastaapps.languagetool.core.error.DomainError
 import cz.lastaapps.languagetool.domain.model.MatchedText
@@ -36,7 +38,6 @@ internal fun ActionChips(
     onLanguageClick: () -> Unit,
     hasPremium: Boolean,
     onPremiumClick: () -> Unit,
-    onHelpClick: () -> Unit,
     modifier: Modifier = Modifier,
     clipboard: ClipboardManager = LocalClipboardManager.current,
 ) {
@@ -66,7 +67,7 @@ internal fun ActionChips(
                     clipboard.setText(AnnotatedString(matched.text))
                 },
                 icon = Icons.Default.ContentCopy,
-                contentDescription = "Copy",
+                contentDescription = stringResource(id = R.string.button_copy),
             )
             IconButtonTooltip(
                 onClick = {
@@ -75,14 +76,14 @@ internal fun ActionChips(
                     } ?: onError(CommonErrors.ClipboardEmpty)
                 },
                 icon = Icons.Default.ContentPaste,
-                contentDescription = "Paste",
+                contentDescription = stringResource(id = R.string.button_paste),
             )
         }
 
         FilterChip(
             selected = isPicky,
             onClick = onPickyClick,
-            label = { Text(text = "Picky") },
+            label = { Text(text = stringResource(id = R.string.label_picky)) },
         )
 
         FilterChip(
@@ -90,7 +91,7 @@ internal fun ActionChips(
             onClick = onLanguageClick,
             label = {
                 Icon(Icons.Default.ArrowDropDown, null)
-                Text(text = selectedLanguage ?: "Auto")
+                Text(text = selectedLanguage ?: stringResource(id = R.string.label_language_auto))
             },
         )
     }

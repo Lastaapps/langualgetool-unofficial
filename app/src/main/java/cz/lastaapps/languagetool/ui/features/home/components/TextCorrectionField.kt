@@ -29,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.domain.model.CheckProgress
 import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.features.home.logic.toAnnotatedString
@@ -122,7 +124,7 @@ internal fun TextCorrectionField(
         },
         enabled = enabled,
         placeholder = {
-            Text(text = "Enter the text to spell-check...")
+            Text(text = stringResource(id = R.string.placeholder_enter_text))
         },
         supportingText = {
             Row(
@@ -143,18 +145,20 @@ internal fun TextCorrectionField(
                             Icon(icon, null, tint = tint)
                         }
                     }
-                    buildString {
-                        append(errors)
-                        append(" errors, ")
-                        if (isClean) {
-                            append("Validated")
-                        } else {
-                            append("Dirty")
-                        }
-                    }.let {
-                        Crossfade(targetState = it, label = "validity_text") { text ->
-                            Text(text = text)
-                        }
+
+                    Crossfade(
+                        targetState = stringResource(
+                            id = R.string.label_validation_summary,
+                            errors,
+                            if (isClean) {
+                                R.string.label_validated
+                            } else {
+                                R.string.label_dirty
+                            }.let { stringResource(id = it) },
+                        ),
+                        label = "validity_text"
+                    ) { text ->
+                        Text(text = text)
                     }
                 }
 

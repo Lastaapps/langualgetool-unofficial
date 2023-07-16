@@ -13,7 +13,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.domain.model.Language
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 import cz.lastaapps.languagetool.ui.util.WrapClick
@@ -62,7 +64,7 @@ internal fun LanguageDialogContent(
         modifier = modifier,
     ) {
         Text(
-            "Select language",
+            stringResource(id = R.string.title_select_language),
             style = MaterialTheme.typography.headlineSmall,
         )
         Spacer(modifier = Modifier.height(PaddingTokens.Medium))
@@ -76,7 +78,7 @@ internal fun LanguageDialogContent(
                 item {
                     WrapClick(onClick = { onLangSelected(null) }) {
                         Text(
-                            text = "Auto",
+                            text = stringResource(id = R.string.label_language_auto),
                             style = MaterialTheme.typography.labelMedium,
                             textAlign = TextAlign.Center,
                         )

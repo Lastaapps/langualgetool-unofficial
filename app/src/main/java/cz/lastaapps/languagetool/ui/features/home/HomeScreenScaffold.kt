@@ -19,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -78,13 +80,13 @@ private fun Title(
             horizontalAlignment = Alignment.End,
         ) {
             Text(
-                text = "LanguageTool",
+                text = stringResource(id = R.string.title_app_name),
                 style = MaterialTheme.typography.displaySmall,
             )
 
             Badge {
                 Text(
-                    text = "Unofficial",
+                    text = stringResource(id = R.string.title_app_subtitle),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(
                         vertical = PaddingTokens.Tiny,
@@ -101,13 +103,13 @@ private fun Title(
             horizontalArrangement = Arrangement.spacedBy(PaddingTokens.MidSmall),
         ) {
             Text(
-                text = "LanguageTool",
+                text = stringResource(id = R.string.title_app_name),
                 style = MaterialTheme.typography.titleLarge,
             )
 
             Badge {
                 Text(
-                    text = "Unofficial",
+                    text = stringResource(id = R.string.title_app_subtitle),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(
                         vertical = PaddingTokens.Tiny,
