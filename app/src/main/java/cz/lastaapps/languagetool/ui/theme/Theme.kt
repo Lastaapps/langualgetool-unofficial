@@ -1,6 +1,6 @@
 package cz.lastaapps.languagetool.ui.theme
 
-import android.annotation.SuppressLint
+import android.os.Build
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -16,8 +16,6 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import cz.lastaapps.languagetool.ui.theme.generated.DarkColors
 import cz.lastaapps.languagetool.ui.theme.generated.LightColors
 
-object Tmp
-
 @Composable
 fun AppTheme(
     isDarkMode: Boolean = isSystemInDarkTheme(),
@@ -28,11 +26,14 @@ fun AppTheme(
     val isLightMode = !isDarkMode
 
     val colorScheme = if (useDynamic) {
-        @SuppressLint("NewApi")
-        if (isLightMode) {
-            dynamicLightColorScheme(LocalContext.current)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (isLightMode) {
+                dynamicLightColorScheme(LocalContext.current)
+            } else {
+                dynamicDarkColorScheme(LocalContext.current)
+            }
         } else {
-            dynamicDarkColorScheme(LocalContext.current)
+            error("You fucked up")
         }
     } else {
         if (isLightMode) {
