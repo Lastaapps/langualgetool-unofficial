@@ -8,7 +8,9 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -72,40 +74,48 @@ internal fun TextCorrectionField(
     // CoreTextField's onValueChange is called multiple times without recomposition in between.
     var lastTextValue by remember(value) { mutableStateOf(value) }
 
-    TextCorrectionField(
-        text = textFieldValue,
-        onText = { newTextFieldValueState ->
-            textFieldValueState = newTextFieldValueState
-
-            val stringChangedSinceLastInvocation =
-                lastTextValue != newTextFieldValueState.annotatedString
-            lastTextValue = newTextFieldValueState.annotatedString
-
-            if (stringChangedSinceLastInvocation) {
-                onText(newTextFieldValueState.annotatedString.text)
-            }
-            onCursor(newTextFieldValueState.selection.start)
-        },
-        charLimit = charLimit,
-        errors = matched.errors.size,
-        isClean = !matched.isTouched,
+    // support text was not working properly
+    Column(
         modifier = modifier,
-        enabled = progress != CheckProgress.Processing,
-    )
+        verticalArrangement = Arrangement.spacedBy(PaddingTokens.Smaller),
+    ) {
+        TextCorrectionField(
+            text = textFieldValue,
+            onText = { newTextFieldValueState ->
+                textFieldValueState = newTextFieldValueState
+
+                val stringChangedSinceLastInvocation =
+                    lastTextValue != newTextFieldValueState.annotatedString
+                lastTextValue = newTextFieldValueState.annotatedString
+
+                if (stringChangedSinceLastInvocation) {
+                    onText(newTextFieldValueState.annotatedString.text)
+                }
+                onCursor(newTextFieldValueState.selection.start)
+            },
+            enabled = progress != CheckProgress.Processing,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+        )
+
+        SupportingText(
+            text = textFieldValue,
+            charLimit = charLimit,
+            errors = matched.visibleErrors.size,
+            isClean = !matched.isTouched,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
 }
 
 @Composable
 internal fun TextCorrectionField(
     text: TextFieldValue,
     onText: (TextFieldValue) -> Unit,
-    charLimit: Int,
-    errors: Int,
-    isClean: Boolean,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val chars = text.text.length
-
     val alpha by rememberInfiniteTransition(label = "TextField alpha")
         .animateFloat(
             initialValue = .6f,
@@ -114,7 +124,7 @@ internal fun TextCorrectionField(
                 animation = tween(1000, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
             ),
-            label = "TextField alpha"
+            label = "TextField alpha",
         )
 
     TextField(
@@ -126,52 +136,7 @@ internal fun TextCorrectionField(
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_enter_text))
         },
-        supportingText = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(PaddingTokens.Small),
-                    modifier = Modifier.weight(1f),
-                ) {
-                    when {
-                        errors > 0 -> Icons.Default.Error to MaterialTheme.colorScheme.error
-                        !isClean -> Icons.Default.Warning to MaterialTheme.colorScheme.primary
-                        // else -> Icons.Default.Check to LocalContentColor.current
-                        else -> Icons.Default.Check to MaterialTheme.colorScheme.secondary
-                    }.let {
-                        Crossfade(targetState = it, label = "validity_icon") { (icon, tint) ->
-                            Icon(icon, null, tint = tint)
-                        }
-                    }
-
-                    Crossfade(
-                        targetState = stringResource(
-                            id = R.string.label_validation_summary,
-                            errors,
-                            if (isClean) {
-                                R.string.label_validated
-                            } else {
-                                R.string.label_dirty
-                            }.let { stringResource(id = it) },
-                        ),
-                        label = "validity_text"
-                    ) { text ->
-                        Text(text = text)
-                    }
-                }
-
-                Text(
-                    "$chars/$charLimit",
-                    color = if (chars > charLimit) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        Color.Unspecified
-                    },
-                )
-            }
-        },
+        supportingText = {},
         shape = MaterialTheme.shapes.extraLarge,
         colors = TextFieldDefaults.colors(
             disabledIndicatorColor = Color.Transparent,
@@ -191,7 +156,64 @@ internal fun TextCorrectionField(
                     1f
                 } else {
                     alpha
-                }
+                },
             ),
     )
+}
+
+@Composable
+private fun SupportingText(
+    text: TextFieldValue,
+    charLimit: Int,
+    errors: Int,
+    isClean: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val chars = text.text.length
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(PaddingTokens.Small),
+            modifier = Modifier.weight(1f),
+        ) {
+            when {
+                errors > 0 -> Icons.Default.Error to MaterialTheme.colorScheme.error
+                !isClean -> Icons.Default.Warning to MaterialTheme.colorScheme.primary
+                // else -> Icons.Default.Check to LocalContentColor.current
+                else -> Icons.Default.Check to MaterialTheme.colorScheme.secondary
+            }.let {
+                Crossfade(targetState = it, label = "validity_icon") { (icon, tint) ->
+                    Icon(icon, null, tint = tint)
+                }
+            }
+
+            Crossfade(
+                targetState = stringResource(
+                    id = R.string.label_validation_summary,
+                    errors,
+                    if (isClean) {
+                        R.string.label_validated
+                    } else {
+                        R.string.label_dirty
+                    }.let { stringResource(id = it) },
+                ),
+                label = "validity_text",
+            ) { text ->
+                Text(text = text)
+            }
+        }
+
+        Text(
+            "$chars/$charLimit",
+            color = if (chars > charLimit) {
+                MaterialTheme.colorScheme.error
+            } else {
+                Color.Unspecified
+            },
+        )
+    }
 }

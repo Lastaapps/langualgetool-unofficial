@@ -19,8 +19,10 @@ import cz.lastaapps.languagetool.domain.model.CheckProgress
 import cz.lastaapps.languagetool.domain.model.Language
 import cz.lastaapps.languagetool.domain.model.MatchedError
 import cz.lastaapps.languagetool.domain.model.MatchedText
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -45,14 +47,26 @@ internal class HomeViewModel(
             updateState { copy(language = it?.toDomain()) }
         }.launchInVM()
 
-        appPreferences.getApiCredentials().onEach {
+        combine(
+            appPreferences.getApiUrl(),
+            appPreferences.getApiCredentials(),
+        ) { url, credentials ->
+            val canUsePremium = url != null || credentials != null
             updateState {
                 copy(
-                    maxChars = it?.let { MAX_CHARS_PREMIUM } ?: MAX_CHARS_FREE,
-                    timeout = it?.let { TIMEOUT_PREMIUM } ?: TIMEOUT_FREE,
+                    maxChars = if (canUsePremium) {
+                        MAX_CHARS_PREMIUM
+                    } else {
+                        MAX_CHARS_FREE
+                    },
+                    timeout = if (canUsePremium) {
+                        TIMEOUT_PREMIUM
+                    } else {
+                        TIMEOUT_FREE
+                    },
                 )
             }
-        }
+        }.launchInVM()
     }
 
     fun onCheckRequest() = launchVM {
@@ -72,7 +86,10 @@ internal class HomeViewModel(
         when (val res = repo.correctText(text)) {
             is Either.Right -> {
                 updateState {
-                    copy(matched = res.value)
+                    val oldErrors = matched.errors
+                    val newErrors = res.value.errors
+                    val merged = mergeSkipped(oldErrors, newErrors).toPersistentList()
+                    copy(matched = res.value.copy(errors = merged))
                 }
                 launchRateLimitJob()
             }
@@ -81,6 +98,41 @@ internal class HomeViewModel(
                 copy(error = res.value, progress = CheckProgress.Ready)
             }
         }
+    }
+
+    private fun mergeSkipped(old: List<MatchedError>, new: List<MatchedError>): List<MatchedError> {
+        var iO = 0
+        var iN = 0
+        val out = mutableListOf<MatchedError>()
+
+        while (iO < old.size && iN < new.size) {
+            val fO = old[iO]
+            val fN = new[iN]
+
+            when {
+                fO.range.first < fN.range.first -> iO++
+                fO.range.first > fN.range.first -> {
+                    iN++
+                    out += fN
+                }
+
+                fO.range.first == fN.range.first -> {
+                    iO++
+                    iN++
+
+                    out += if (fO.isSkipped) {
+                        fN.copy(isSkipped = true)
+                    } else {
+                        fN
+                    }
+                }
+            }
+        }
+        while (iN < new.size) {
+            out += new[iN++]
+        }
+
+        return out
     }
 
     fun onTextChanged(newText: String) {
@@ -105,6 +157,21 @@ internal class HomeViewModel(
         }
         latestState().matched.errors.takeIf { it.isEmpty() }?.let {
             onCheckRequest()
+        }
+    }
+
+    fun skipSuggestion(matchedError: MatchedError) {
+        updateState {
+            matched.errors.indexOf(matchedError)
+                .takeIf { it >= 0 }
+                ?.let { errorIndex ->
+                    copy(
+                        matched = matched.copy(
+                            errors = matched.errors
+                                .set(errorIndex, matchedError.copy(isSkipped = true)),
+                        ),
+                    )
+                } ?: this
         }
     }
 

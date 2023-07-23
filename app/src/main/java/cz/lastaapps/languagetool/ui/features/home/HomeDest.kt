@@ -62,7 +62,8 @@ internal fun HomeDest(
             cursorPosition = cursorPosition,
             matched = state.matched,
             onApplySuggestion = viewModel::applySuggestion,
-            onDetail = { /* TODO */ }
+            onDetail = { /* TODO */ },
+            onSkip = viewModel::skipSuggestion,
         )
     }
     val chipsBlock: @Composable () -> Unit = {
@@ -72,6 +73,7 @@ internal fun HomeDest(
                 viewModel.onTextChanged(it)
                 viewModel.onCheckRequest()
             },
+            onClear = { viewModel.onTextChanged("") },
             onError = {
                 scope.launch { hostState.showSnackbar(it.getMessage()) }
             },

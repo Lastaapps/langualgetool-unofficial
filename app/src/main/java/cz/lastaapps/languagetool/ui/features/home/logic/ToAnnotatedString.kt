@@ -14,7 +14,7 @@ import cz.lastaapps.languagetool.domain.model.MatchedText
 internal fun MatchedText.toAnnotatedString() = remember(this) {
     buildAnnotatedString {
         var lastIndex = 0
-        errors.forEach {
+        visibleErrors.forEach {
             append(text.substring(lastIndex, it.range.first))
 
             val color = it.errorType.toColor()

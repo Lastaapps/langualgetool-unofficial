@@ -11,6 +11,7 @@ object PaddingTokens {
     val Medium = 16.dp
     val MidLarge = 24.dp
     val Large = 32.dp
+    val ExtraLarge = 42.dp
 
     object More {
         val Screen = MidSmall

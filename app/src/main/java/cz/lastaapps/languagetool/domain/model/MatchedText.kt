@@ -3,14 +3,21 @@ package cz.lastaapps.languagetool.domain.model
 import arrow.core.None
 import arrow.core.Option
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 
 internal data class MatchedText(
     val text: String,
-    val errors: ImmutableList<MatchedError>,
+    val errors: PersistentList<MatchedError>,
     val isComplete: Option<Boolean>, // the text may not have been checked yet at all
     val isTouched: Boolean, // if the user has edited the text after the request
 ) {
+    val visibleErrors by lazy {
+        errors.filter { !it.isSkipped }
+            .toPersistentList()
+    }
+
     companion object {
         @Suppress("SpellCheckingInspection")
         val empty
@@ -28,6 +35,7 @@ internal data class MatchedText(
 
 internal data class MatchedError(
     val index: Int,
+    val isSkipped: Boolean,
     val message: String,
     val shortMessage: String?,
     val range: IntRange,
@@ -42,6 +50,7 @@ internal data class MatchedError(
         fun example(range: IntRange) =
             MatchedError(
                 index = 0,
+                isSkipped = false,
                 message = "Use “a” instead of ‘an’ if the following word doesn’t start with a vowel sound, e.g. ‘a sentence’, ‘a university’.",
                 shortMessage = "Wrong article",
                 range = range,
@@ -53,6 +62,12 @@ internal data class MatchedError(
                 isPremium = true,
             )
     }
+
+    infix fun almostSame(other: MatchedError): Boolean =
+        message == other.message
+            && shortMessage == other.shortMessage
+            && range == other.range
+            && original == other.original
 }
 
 enum class ErrorType {

@@ -1,13 +1,15 @@
 package cz.lastaapps.languagetool.ui.features.home.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -23,14 +25,15 @@ import cz.lastaapps.languagetool.R
 import cz.lastaapps.languagetool.core.error.CommonErrors
 import cz.lastaapps.languagetool.core.error.DomainError
 import cz.lastaapps.languagetool.domain.model.MatchedText
-import cz.lastaapps.languagetool.ui.components.IconButtonTooltip
+import cz.lastaapps.languagetool.ui.components.IconWithTitle
 import cz.lastaapps.languagetool.ui.theme.PaddingTokens
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ActionChips(
     matched: MatchedText,
     onPasteText: (String) -> Unit,
+    onClear: () -> Unit,
     onError: (DomainError) -> Unit,
     isPicky: Boolean,
     onPickyClick: () -> Unit,
@@ -47,7 +50,9 @@ internal fun ActionChips(
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .horizontalScroll(rememberScrollState()),
         ) {
 //            if (!hasPremium) {
 //                TextButton(
@@ -62,21 +67,26 @@ internal fun ActionChips(
 //                }
 //            }
 
-            IconButtonTooltip(
+            IconWithTitle(
                 onClick = {
                     clipboard.setText(AnnotatedString(matched.text))
                 },
                 icon = Icons.Default.ContentCopy,
-                contentDescription = stringResource(id = R.string.button_copy),
+                title = stringResource(id = R.string.button_copy),
             )
-            IconButtonTooltip(
+            IconWithTitle(
                 onClick = {
                     clipboard.getText()?.let {
                         onPasteText(it.text)
                     } ?: onError(CommonErrors.ClipboardEmpty)
                 },
                 icon = Icons.Default.ContentPaste,
-                contentDescription = stringResource(id = R.string.button_paste),
+                title = stringResource(id = R.string.button_paste),
+            )
+            IconWithTitle(
+                onClick = onClear,
+                icon = Icons.Outlined.Delete,
+                title = stringResource(id = R.string.button_clear),
             )
         }
 

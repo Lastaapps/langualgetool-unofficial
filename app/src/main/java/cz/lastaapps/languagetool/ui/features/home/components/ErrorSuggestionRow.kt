@@ -56,6 +56,7 @@ internal fun ErrorSuggestionRow(
     cursorPosition: Int,
     matched: MatchedText,
     onApplySuggestion: (MatchedError, String) -> Unit,
+    onSkip: (MatchedError) -> Unit,
     onDetail: (MatchedError) -> Unit,
     errorSuggestionsRowState: LazyListState = rememberLazyListState(),
 ) {
@@ -79,10 +80,12 @@ internal fun ErrorSuggestionRow(
             return@LazyRow
         }
 
-        items(matched.errors, key = { it.index }) { error ->
+        items(matched.visibleErrors, key = { it.index }) { error ->
+
             ErrorSuggestionRowItem(
                 onDetail = { onDetail(error) },
                 onSuggestion = { onApplySuggestion(error, it) },
+                onSkip = { onSkip(error) },
                 error = error,
                 modifier = Modifier.animateItemPlacement(),
             )
@@ -95,6 +98,7 @@ internal fun ErrorSuggestionRow(
 internal fun ErrorSuggestionRowItem(
     onDetail: () -> Unit,
     onSuggestion: (String) -> Unit,
+    onSkip: () -> Unit,
     error: MatchedError,
     modifier: Modifier = Modifier,
 ) {
@@ -134,7 +138,7 @@ internal fun ErrorSuggestionRowItem(
                     Icon(
                         Icons.Default.Star,
                         contentDescription = stringResource(id = R.string.label_premium_error),
-                        tint = Color(0xFFFBC02D)
+                        tint = Color(0xFFFBC02D),
                     )
                 }
             }
@@ -149,14 +153,21 @@ internal fun ErrorSuggestionRowItem(
             )
 
             FlowRow {
+                val itemModifier = Modifier.padding(PaddingTokens.Small / 2)
+
                 error.replacements.forEach { suggestion ->
                     SuggestionItem(
                         onClick = { onSuggestion(suggestion) },
                         suggestion = suggestion,
                         type = error.errorType,
-                        modifier = Modifier.padding(PaddingTokens.Small / 2)
+                        modifier = itemModifier,
                     )
                 }
+
+                SkipItem(
+                    onClick = onSkip,
+                    modifier = itemModifier,
+                )
             }
         }
     }
@@ -190,6 +201,30 @@ private fun SuggestionItem(
     }
 }
 
+@Composable
+private fun SkipItem(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier.clickable { onClick() },
+        shape = MaterialTheme.shapes.small,
+        shadowElevation = 4.dp,
+    ) {
+        Text(
+            text = stringResource(id = R.string.label_skip),
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier
+                .sizeIn(minHeight = ErrorSuggestionTokens.minSuggestionHeight)
+                .padding(
+                    horizontal = PaddingTokens.MidSmall,
+                    vertical = PaddingTokens.Smaller,
+                ),
+        )
+    }
+}
+
 private object ErrorSuggestionTokens {
     val minWidth = 128.dp
     val maxWidth = 192.dp
@@ -199,9 +234,10 @@ private object ErrorSuggestionTokens {
 
 @Preview
 @Composable
-private fun ErrorSuggestionRowItem() = PreviewWrapper {
+private fun ErrorSuggestionRowItemPreview() = PreviewWrapper {
     ErrorSuggestionRowItem(
         onDetail = {},
+        onSkip = {},
         onSuggestion = {},
         error = MatchedError.example(IntRange(0, 0)),
         modifier = Modifier,

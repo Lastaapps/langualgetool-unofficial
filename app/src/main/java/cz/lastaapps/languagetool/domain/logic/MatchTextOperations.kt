@@ -4,7 +4,7 @@ import cz.lastaapps.languagetool.domain.model.MatchedText
 import cz.lastaapps.languagetool.ui.util.moveBy
 import cz.lastaapps.languagetool.ui.util.sizeAsExclusive
 import cz.lastaapps.languagetool.ui.util.withLength
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 
 internal fun MatchedText.replace(
     range: IntRange,
@@ -26,7 +26,7 @@ internal fun MatchedText.replace(
     val rangeWidth = newText.length - range.sizeAsExclusive
     val validMatches = errors.filter { error ->
         error.range.last.inc() < range.first // end of error
-                || range.last.inc() < error.range.first // start of error
+            || range.last.inc() < error.range.first // start of error
     }.map { error ->
         if (error.range.first < range.first) {
             error
@@ -35,7 +35,7 @@ internal fun MatchedText.replace(
                 range = error.range.moveBy(rangeWidth),
             )
         }
-    }.toImmutableList()
+    }.toPersistentList()
 
     return copy(
         text = updatedText,
