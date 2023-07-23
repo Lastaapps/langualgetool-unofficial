@@ -61,6 +61,7 @@ internal fun MatchDto.toDomain(
 ) = (offset withLength length).let { range ->
     MatchedError(
         index = index,
+        isSkipped = false,
         message = this.message.takeUnless { it == "(hidden message)" } ?: "Premium",
         shortMessage = this.shortMessage?.takeIf { it.isNotEmpty() },
         range = range,

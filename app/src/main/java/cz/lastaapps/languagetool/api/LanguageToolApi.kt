@@ -33,7 +33,7 @@ internal class LanguageToolApiImpl(
     ): Outcome<CorrectionDto> = catchingNetwork {
         val credentials = apiCredentialsProvider.provideCredentials()
         client.submitForm(
-            url = urlProvider.provideUrl() + "/check",
+            url = urlProvider.provideUrl() + "/v2/check",
             formParameters = parameters {
                 append("text", text)
 
@@ -62,11 +62,11 @@ internal class LanguageToolApiImpl(
                     append("username", it.userName)
                     append("apiKey", it.apiKey)
                 }
-            }
+            },
         ).body()
     }
 
     override suspend fun getLanguages(): Outcome<List<SupportedLanguageDto>> = catchingNetwork {
-        client.get(urlProvider.provideUrl() + "/languages").body()
+        client.get(urlProvider.provideUrl() + "/v2/languages").body()
     }
 }

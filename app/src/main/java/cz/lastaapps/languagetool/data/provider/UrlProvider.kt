@@ -11,5 +11,5 @@ internal class UrlProviderImpl(
     private val preferences: AppPreferences,
 ) : UrlProvider {
     override suspend fun provideUrl(): String =
-        preferences.getApiUrl().first() ?: "https://api.languagetool.org/v2"
+        preferences.getApiUrl().first() ?: "https://api.languagetool.org"
 }

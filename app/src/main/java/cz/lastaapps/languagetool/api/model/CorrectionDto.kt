@@ -2,7 +2,7 @@ package cz.lastaapps.languagetool.api.model
 
 import arrow.core.some
 import cz.lastaapps.languagetool.domain.model.MatchedText
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -49,7 +49,7 @@ internal fun CorrectionDto.toDomain(
     errors = (matches + hiddenMatches)
         .sortedBy { it.offset }
         .mapIndexed { index, it -> it.toDomain(index, text) }
-        .toImmutableList(),
+        .toPersistentList(),
     isComplete = (this.warnings?.incompleteResults ?: true).some(),
     isTouched = false,
 )

@@ -12,6 +12,7 @@ import cz.lastaapps.languagetool.ui.features.dialogs.HelpDialogContent
 import cz.lastaapps.languagetool.ui.features.dialogs.SpellcheckDialog
 import cz.lastaapps.languagetool.ui.features.home.HomeDest
 import cz.lastaapps.languagetool.ui.features.language.LanguageDialogDest
+import cz.lastaapps.languagetool.ui.features.settings.SettingsDest
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -36,12 +37,17 @@ fun Router(
                 toSpellCheck = { navController.navigate(Dests.SPELLCHECK) },
             )
         }
-        composable(Dests.SETTINGS) { Text("Settings") }
+        composable(Dests.SETTINGS) {
+            SettingsDest(
+                viewModel = koinViewModel(),
+            )
+        }
         saneDialog(Dests.LANGUAGE, navUp) {
             LanguageDialogDest(
                 onNavigateUp = {
                     navController.navigateUp()
-                })
+                },
+            )
         }
         saneDialog(Dests.SPELLCHECK, navUp) { SpellcheckDialog() }
         saneDialog(Dests.HELP, navUp) { HelpDialogContent() }

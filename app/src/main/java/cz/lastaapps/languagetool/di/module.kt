@@ -15,6 +15,7 @@ import cz.lastaapps.languagetool.data.provider.UrlProvider
 import cz.lastaapps.languagetool.data.provider.UrlProviderImpl
 import cz.lastaapps.languagetool.ui.features.home.HomeViewModel
 import cz.lastaapps.languagetool.ui.features.language.LanguageDialogViewModel
+import cz.lastaapps.languagetool.ui.features.settings.SettingsViewModel
 import kotlinx.datetime.Clock
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
@@ -28,6 +29,7 @@ internal val module = module {
 
     viewModelOf(::HomeViewModel)
     viewModelOf(::LanguageDialogViewModel)
+    viewModelOf(::SettingsViewModel)
 
     singleOf(::LangToolRepositoryImpl) bind LangToolRepository::class
     factoryOf(::LanguageToolApiImpl) bind LanguageToolApi::class

@@ -50,6 +50,7 @@
 
     <string name="button_copy">Copy</string>
     <string name="button_paste">Paste</string>
+    <string name="button_clear">Clear</string>
     <string name="label_picky">Picky</string>
     <string name="label_language_auto">Auto</string>
     <string name="label_premium_error">Premium error</string>
@@ -67,4 +68,13 @@
     <string name="title_app_name">LanguageTool</string>
     <string name="title_app_subtitle">Unofficial</string>
     <string name="title_select_language">Select language</string>
+    <string name="button_open_settings">Open settings</string>
+    <string name="label_skip">Skip</string>
+    <string name="title_settings">Settings</string>
+    <string name="label_custom_api_url">Custom API URL.</string>
+    <string name="button_save_and_check">Save &amp; Check</string>
+    <string name="label_username_email">Username or email</string>
+    <string name="label_api_key">API key</string>
+    <string name="text_checked">Valid</string>
+    <string name="text_invalid">Invalid</string>
 </resources>
