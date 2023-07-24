@@ -62,7 +62,7 @@ internal fun HomeDest(
             cursorPosition = cursorPosition,
             matched = state.matched,
             onApplySuggestion = viewModel::applySuggestion,
-            onDetail = { /* TODO */ },
+            onDetail = { viewModel.selectMatchError(it) },
             onSkip = viewModel::skipSuggestion,
         )
     }
@@ -106,5 +106,21 @@ internal fun HomeDest(
         appBar = appBarBlock,
         modifier = modifier,
     )
+
+    state.selectedMatch?.let { error ->
+        val dismiss = { viewModel.selectMatchError(null) }
+        MatchDetailDialog(
+            error = error,
+            onApplySuggestion = {
+                viewModel.applySuggestion(error, it)
+                dismiss()
+            },
+            onSkip = {
+                viewModel.skipSuggestion(error)
+                dismiss()
+            },
+            onDismiss = dismiss,
+        )
+    }
 }
 

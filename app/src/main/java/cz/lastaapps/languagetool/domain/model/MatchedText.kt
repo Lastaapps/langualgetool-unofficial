@@ -2,6 +2,7 @@ package cz.lastaapps.languagetool.domain.model
 
 import arrow.core.None
 import arrow.core.Option
+import cz.lastaapps.languagetool.ui.util.withLength
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
@@ -24,8 +25,9 @@ internal data class MatchedText(
             get() = MatchedText(
 //                text = "",
 //                text = "This sentenci seplling wrong is.",
-                text = "So how are you doing thoday?",
-                //text = "Errors will be underlined in different colours: we will mark seplling errors with red underilnes. Furthermore grammar error's are highlighted in yellow.",
+//                text = "So how are you doing thoday?",
+//                text = "Errors will be underlined in different colours: we will mark seplling errors with red underilnes. Furthermore grammar error's are highlighted in yellow.",
+                text = "LanguageTool is your intelligent writing assistant for all common browsers and word processors. Write or paste your text here too have it checked continuously. Errors will be underlined in different colours: we will mark seplling errors with red underilnes. Furthermore grammar error's are highlighted in yellow. LanguageTool also marks style issues in a reliable manner by underlining them in blue. did you know that you can sea synonyms by double clicking a word? Its a impressively versatile tool especially if youd like to tell a colleague from over sea's about what happened at 5 PM in the afternoon on Monday, 27 May 2007.",
                 errors = persistentListOf(),
                 isComplete = None,
                 isTouched = true,
@@ -41,13 +43,16 @@ internal data class MatchedError(
     val range: IntRange,
     val original: String,
     val replacements: ImmutableList<String>,
+    val contextSentence: String,
+    val contextRange: IntRange,
+    val ruleCategoryName: String?,
     val ruleDescription: String,
     val errorType: ErrorType,
     val explanationUrl: String?,
     val isPremium: Boolean,
 ) {
     companion object {
-        fun example(range: IntRange) =
+        fun example(range: IntRange = 0..0) =
             MatchedError(
                 index = 0,
                 isSkipped = false,
@@ -56,6 +61,9 @@ internal data class MatchedError(
                 range = range,
                 original = "hitler",
                 replacements = persistentListOf("hello", "hi"),
+                contextSentence = "Hitler, how are you?",
+                contextRange = 0 withLength 6,
+                ruleCategoryName = "Miscellaneous",
                 ruleDescription = "Use of 'a' vs. 'an'",
                 errorType = ErrorType.PUNCTUATION,
                 explanationUrl = "",

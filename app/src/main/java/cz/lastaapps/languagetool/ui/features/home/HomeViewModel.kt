@@ -196,12 +196,19 @@ internal class HomeViewModel(
             updateState { copy(progress = CheckProgress.Ready) }
         }
     }
+
+    fun selectMatchError(error: MatchedError?) {
+        updateState {
+            copy(selectedMatch = error)
+        }
+    }
 }
 
 @Immutable
 internal data class HomeState(
     val progress: CheckProgress = CheckProgress.Ready,
     val matched: MatchedText = MatchedText.empty,
+    val selectedMatch: MatchedError? = null,
     val error: DomainError? = null,
     val maxChars: Int = MAX_CHARS_FREE,
     val timeout: Duration = TIMEOUT_FREE,
