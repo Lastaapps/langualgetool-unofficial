@@ -39,7 +39,7 @@ android {
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -93,7 +93,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.google.material)
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
